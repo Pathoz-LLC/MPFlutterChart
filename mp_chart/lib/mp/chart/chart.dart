@@ -37,7 +37,7 @@ abstract class ChartState<T extends Chart> extends State<T> {
     isCapturing = true;
     String directory = "";
     if (Platform.isAndroid) {
-      directory = (await getExternalStorageDirectory()).path;
+      directory = (await getExternalStorageDirectory())?.path ?? '_failed';
     } else if (Platform.isIOS) {
       directory = (await getApplicationDocumentsDirectory()).path;
     } else {
@@ -46,11 +46,15 @@ abstract class ChartState<T extends Chart> extends State<T> {
 
     String fileName = DateTime.now().toIso8601String();
     String path = '$directory/$fileName.png';
-    _screenshotController.capture(path: path, pixelRatio: 3.0).then((imgFile) {
-      ImageGallerySaver.saveImage(Uint8List.fromList(imgFile.readAsBytesSync()))
-          .then((value) {
-        imgFile.delete();
-      });
+    _screenshotController
+        .captureAsUiImage(pixelRatio: 3.0)
+        .then((imgFile) async {
+      // FIXME:  I don't follow this logic
+      // var imgData = Uint8List.fromList(imgFile.toByteData().);
+      // await ImageGallerySaver.saveImage(imgData);
+
+      imgFile.dispose();
+
       isCapturing = false;
     }).catchError((error) {
       isCapturing = false;

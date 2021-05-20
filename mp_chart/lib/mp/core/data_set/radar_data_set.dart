@@ -23,7 +23,10 @@ class RadarDataSet extends LineRadarDataSet<RadarEntry>
   double _highlightCircleOuterRadius = 4.0;
   double _highlightCircleStrokeWidth = 2.0;
 
-  RadarDataSet(List<RadarEntry> yVals, String label) : super(yVals, label);
+  RadarDataSet(
+    List<RadarEntry> yVals,
+    String label,
+  ) : super(yVals, label);
 
   /// Returns true if highlight circle should be drawn, false if not
   @override
@@ -97,7 +100,7 @@ class RadarDataSet extends LineRadarDataSet<RadarEntry>
 
   @override
   DataSet<RadarEntry> copy1() {
-    List<RadarEntry> entries = List<RadarEntry>();
+    List<RadarEntry> entries = [];
     for (int i = 0; i < values.length; i++) {
       entries.add(values[i].copy());
     }

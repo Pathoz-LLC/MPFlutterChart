@@ -4,9 +4,13 @@ import 'package:mp_chart/mp/core/highlight/highlight.dart';
 import 'package:mp_chart/mp/painter/painter.dart';
 
 abstract class HighlightUtils {
-  static Highlight performHighlight(
-      ChartPainter painter, Highlight curHighlight, Highlight lastHighlight) {
-    if (curHighlight == null || curHighlight.equalTo(lastHighlight)) {
+  static Highlight? performHighlight(
+    ChartPainter painter,
+    Highlight? curHighlight,
+    Highlight? lastHighlight,
+  ) {
+    if (curHighlight == null ||
+        (lastHighlight != null && curHighlight.equalTo(lastHighlight))) {
       painter.highlightValue6(null, true);
       lastHighlight = null;
     } else {
@@ -18,7 +22,7 @@ abstract class HighlightUtils {
 
   static Highlight performHighlightDrag(
       ChartPainter painter, Highlight lastHighlight, Offset offset) {
-    Highlight h = painter.getHighlightByTouchPoint(offset.dx, offset.dy);
+    Highlight? h = painter.getHighlightByTouchPoint(offset.dx, offset.dy);
 
     if (h != null && !h.equalTo(lastHighlight)) {
       lastHighlight = h;

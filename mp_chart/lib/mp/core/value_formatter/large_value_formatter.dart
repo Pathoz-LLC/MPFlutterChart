@@ -2,15 +2,10 @@ import 'package:intl/intl.dart';
 import 'package:mp_chart/mp/core/value_formatter/value_formatter.dart';
 
 class LargeValueFormatter extends ValueFormatter {
-  List<String> _suffix = List()
-    ..add("")
-    ..add("k")
-    ..add("m")
-    ..add("b")
-    ..add("t");
+  List<String> _suffix = []..add("")..add("k")..add("m")..add("b")..add("t");
   int _maxLength = 5;
-  NumberFormat _format;
-  String _text = "";
+  late NumberFormat _format;
+  late String _text = "";
 
   /// Creates a formatter that appends a specified text to the result string
   ///
@@ -48,8 +43,8 @@ class LargeValueFormatter extends ValueFormatter {
   /// (https://github.com/romangromov) for this piece of code.
   String makePretty(double number) {
     String r = _format.format(number);
-    int numericValue1 = int.tryParse(r[r.length - 1]);
-    int numericValue2 = int.tryParse(r[r.length - 2]);
+    int numericValue1 = int.tryParse(r[r.length - 1]) ?? 0;
+    int numericValue2 = int.tryParse(r[r.length - 2]) ?? 0;
     int combined = int.parse("$numericValue2$numericValue1");
 
     r = r.replaceAllMapped(

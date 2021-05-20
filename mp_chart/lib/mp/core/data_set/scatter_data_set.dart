@@ -37,7 +37,7 @@ class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry>
 
   @override
   DataSet<Entry> copy1() {
-    List<Entry> entries = List<Entry>();
+    List<Entry> entries = [];
     for (int i = 0; i < values.length; i++) {
       entries.add(values[i].copy());
     }
@@ -135,6 +135,6 @@ class ScatterDataSet extends LineScatterCandleRadarDataSet<Entry>
         return ChevronDownShapeRenderer();
     }
 
-    return null;
+    // return null;
   }
 }

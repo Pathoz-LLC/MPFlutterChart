@@ -8,7 +8,7 @@ import 'package:mp_chart/mp/core/view_port.dart';
 
 abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
   /// buffer for storing the current minimum and maximum visible x
-  XBounds _xBounds;
+  late XBounds _xBounds;
 
   BarLineScatterCandleBubbleRenderer(
       Animator animator, ViewPortHandler viewPortHandler)

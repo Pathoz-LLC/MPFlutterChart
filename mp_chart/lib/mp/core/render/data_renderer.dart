@@ -16,18 +16,18 @@ abstract class DataRenderer extends Renderer {
   Animator _animator;
 
   /// main paint object used for rendering
-  Paint _renderPaint;
+  late Paint _renderPaint;
 
   /// paint used for highlighting values
-  Paint _highlightPaint;
+  late Paint _highlightPaint;
 
-  Paint _drawPaint;
+  late Paint _drawPaint;
 
-  TextPainter _valuePaint;
+  late TextPainter _valuePaint;
 
-  DataRenderer(Animator animator, ViewPortHandler viewPortHandler)
+  DataRenderer(this._animator, ViewPortHandler viewPortHandler)
       : super(viewPortHandler) {
-    this._animator = animator;
+    // this._animator = animator;
 
     _renderPaint = Paint()
       ..isAntiAlias = true
@@ -35,8 +35,12 @@ abstract class DataRenderer extends Renderer {
 
     _drawPaint = Paint();
 
-    _valuePaint = PainterUtils.create(_valuePaint, null,
-        Color.fromARGB(255, 63, 63, 63), Utils.convertDpToPixel(9));
+    _valuePaint = PainterUtils.create(
+      _valuePaint,
+      null,
+      Color.fromARGB(255, 63, 63, 63),
+      Utils.convertDpToPixel(9),
+    );
 
     _highlightPaint = Paint()
       ..isAntiAlias = true
@@ -77,10 +81,14 @@ abstract class DataRenderer extends Renderer {
   ///
   /// @param set
   void applyValueTextStyle(IDataSet set) {
-    _valuePaint = PainterUtils.create(_valuePaint, null,
-        Color.fromARGB(255, 63, 63, 63), Utils.convertDpToPixel(9),
-        fontFamily: set?.getValueTypeface()?.fontFamily,
-        fontWeight: set?.getValueTypeface()?.fontWeight);
+    _valuePaint = PainterUtils.create(
+      _valuePaint,
+      null,
+      Color.fromARGB(255, 63, 63, 63),
+      Utils.convertDpToPixel(9),
+      fontFamily: set.getValueTypeface().fontFamily,
+      fontWeight: set.getValueTypeface().fontWeight,
+    );
   }
 
   /// Initializes the buffers used for rendering with a  size. Since this
@@ -105,7 +113,8 @@ abstract class DataRenderer extends Renderer {
   /// @param x         position
   /// @param y         position
   /// @param color
-  void drawValue(Canvas c, String valueText, double x, double y, Color color, double textSize, TypeFace typeFace);
+  void drawValue(Canvas c, String valueText, double x, double y, Color color,
+      double textSize, TypeFace typeFace);
 
   /// Draws any kind of additional information (e.g. line-circles).
   ///

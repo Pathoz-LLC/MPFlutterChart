@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:mp_chart/mp/core/axis/axis_base.dart';
 import 'package:mp_chart/mp/core/enums/axis_dependency.dart';
@@ -44,7 +45,7 @@ class YAxis extends AxisBase {
   YAxisLabelPosition _position = YAxisLabelPosition.OUTSIDE_CHART;
 
   /// the side this axis object represents
-  AxisDependency _axisDependency;
+  late AxisDependency _axisDependency;
 
   /// the minimum width that the axis should take (in dp).
   /// <p/>
@@ -175,7 +176,7 @@ class YAxis extends AxisBase {
   /// @param p
   /// @return
   double getRequiredWidthSpace(TextPainter p) {
-    p = PainterUtils.create(p, null, null, textSize);
+    p = PainterUtils.create(p, '', Colors.transparent, textSize);
     String label = getLongestLabel();
     double width = Utils.calcTextWidth(p, label) + xOffset * 2;
     if (minWidth > 0) minWidth = Utils.convertDpToPixel(minWidth);
@@ -190,7 +191,7 @@ class YAxis extends AxisBase {
   /// @param p
   /// @return
   double getRequiredHeightSpace(TextPainter p) {
-    p = PainterUtils.create(p, null, null, textSize);
+    p = PainterUtils.create(p, '', Colors.transparent, textSize);
 
     String label = getLongestLabel();
     return Utils.calcTextHeight(p, label) + yOffset * 2;

@@ -4,12 +4,12 @@ import 'package:mp_chart/mp/core/axis/x_axis.dart';
 import 'package:mp_chart/mp/core/value_formatter/value_formatter.dart';
 
 class MyValueFormatter extends ValueFormatter {
-  NumberFormat _format;
+  late NumberFormat _format;
   String _suffix;
 
-  MyValueFormatter(String suffix) {
+  MyValueFormatter(this._suffix) {
     _format = NumberFormat("###,###,###,##0.0");
-    this._suffix = suffix;
+    // this._suffix = suffix;
   }
 
   @override

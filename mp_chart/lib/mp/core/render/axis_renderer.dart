@@ -19,34 +19,36 @@ abstract class AxisRenderer extends Renderer {
   Transformer _trans;
 
   /// paint object for the grid lines
-  Paint _gridPaint;
+  late Paint _gridPaint;
 
   /// paint for the x-label values
-  TextPainter _axisLabelPaint;
+  late TextPainter _axisLabelPaint;
 
   /// paint for the line surrounding the chart
-  Paint _axisLinePaint;
+  late Paint _axisLinePaint;
 
   /// paint used for the limit lines
-  Paint _limitLinePaint;
+  late Paint _limitLinePaint;
 
   AxisRenderer(
-      ViewPortHandler viewPortHandler, Transformer trans, AxisBase axis)
-      : super(viewPortHandler) {
-    this._trans = trans;
-    this._axis = axis;
-    if (viewPortHandler != null) {
-      _gridPaint = Paint()
-        ..color = Color.fromARGB(90, 160, 160, 160)
-        ..strokeWidth = 1
-        ..style = PaintingStyle.stroke;
+    ViewPortHandler viewPortHandler,
+    this._trans,
+    this._axis,
+  ) : super(viewPortHandler) {
+    // this._trans = trans;
+    // this._axis = axis;
+    // if (viewPortHandler != null) {
+    _gridPaint = Paint()
+      ..color = Color.fromARGB(90, 160, 160, 160)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke;
 
-      _axisLabelPaint = PainterUtils.create(null, null, ColorUtils.BLACK, null);
+    _axisLabelPaint = PainterUtils.create(null, null, ColorUtils.BLACK, null);
 
-      _axisLinePaint = Paint()..style = PaintingStyle.stroke;
+    _axisLinePaint = Paint()..style = PaintingStyle.stroke;
 
-      _limitLinePaint = Paint()..style = PaintingStyle.stroke;
-    }
+    _limitLinePaint = Paint()..style = PaintingStyle.stroke;
+    // }
   }
 
   // ignore: unnecessary_getters_setters
@@ -108,9 +110,13 @@ abstract class AxisRenderer extends Renderer {
         viewPortHandler.contentWidth() > 10 &&
         !viewPortHandler.isFullyZoomedOutY()) {
       MPPointD p1 = _trans.getValuesByTouchPoint1(
-          viewPortHandler.contentLeft(), viewPortHandler.contentTop());
+        viewPortHandler.contentLeft(),
+        viewPortHandler.contentTop(),
+      );
       MPPointD p2 = _trans.getValuesByTouchPoint1(
-          viewPortHandler.contentLeft(), viewPortHandler.contentBottom());
+        viewPortHandler.contentLeft(),
+        viewPortHandler.contentBottom(),
+      );
 
       if (!inverted) {
         min = p2.y;
@@ -138,8 +144,8 @@ abstract class AxisRenderer extends Renderer {
     double range = (yMax - yMin).abs();
 
     if (labelCount == 0 || range <= 0 || range.isInfinite) {
-      _axis.entries = List<double>();
-      _axis.centeredEntries = List<double>();
+      _axis.entries = [];
+      _axis.centeredEntries = [];
       _axis.entryCount = 0;
       return;
     }
@@ -155,8 +161,9 @@ abstract class AxisRenderer extends Renderer {
 
     // Normalize interval
     try {
-      double intervalMagnitude =
-          Utils.roundToNextSignificant(pow(10.0, log(interval) ~/ ln10));
+      double intervalMagnitude = Utils.roundToNextSignificant(
+        (pow(10.0, log(interval) ~/ ln10) as double),
+      );
       int intervalSigDigit = interval ~/ intervalMagnitude;
       if (intervalSigDigit > 5) {
         // Use one order of magnitude higher, to avoid intervals like 0.9 or
@@ -176,7 +183,7 @@ abstract class AxisRenderer extends Renderer {
 
       if (_axis.entries.length < labelCount) {
         // Ensure stops contains at least numStops elements.
-        _axis.entries = List(labelCount);
+        _axis.entries = [];
       }
 
       double v = min;
@@ -213,7 +220,7 @@ abstract class AxisRenderer extends Renderer {
 
       if (_axis.entries.length < num) {
         // Ensure stops contains at least numStops elements.
-        _axis.entries = List(num);
+        _axis.entries = [];
       }
 
       i = 0;
@@ -235,7 +242,7 @@ abstract class AxisRenderer extends Renderer {
 
     if (_axis.isCenterAxisLabelsEnabled()) {
       if (_axis.centeredEntries.length < num) {
-        _axis.centeredEntries = List(num);
+        _axis.centeredEntries = [];
       }
 
       int offset = interval ~/ 2;

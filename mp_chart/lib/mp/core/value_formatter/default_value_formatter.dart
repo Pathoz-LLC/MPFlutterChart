@@ -3,9 +3,9 @@ import 'package:mp_chart/mp/core/value_formatter/value_formatter.dart';
 
 class DefaultValueFormatter extends ValueFormatter {
   /// DecimalFormat for formatting
-  NumberFormat _format;
+  late NumberFormat _format;
 
-  int _decimalDigits;
+  late int _decimalDigits;
 
   /// Constructor that specifies to how many digits the value should be
   /// formatted.

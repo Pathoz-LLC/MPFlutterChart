@@ -3,7 +3,7 @@ import 'package:mp_chart/mp/core/value_formatter/value_formatter.dart';
 
 class DefaultAxisValueFormatter extends ValueFormatter {
   /// decimalformat for formatting
-  NumberFormat _format;
+  late NumberFormat _format;
 
   /// the number of decimal digits this formatter uses
   int _digits;
@@ -12,8 +12,8 @@ class DefaultAxisValueFormatter extends ValueFormatter {
   /// formatted.
   ///
   /// @param digits
-  DefaultAxisValueFormatter(int digits) {
-    this._digits = digits;
+  DefaultAxisValueFormatter(this._digits) {
+    // this._digits = digits;
 
     StringBuffer b = StringBuffer();
     for (int i = 0; i < digits; i++) {

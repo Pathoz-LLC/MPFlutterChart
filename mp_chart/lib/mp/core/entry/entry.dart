@@ -1,11 +1,17 @@
 import 'package:mp_chart/mp/core/entry/base_entry.dart';
 import 'dart:ui' as ui;
 
+// const DFLT_ICON = const ui.Image();
+
 class Entry extends BaseEntry {
   double _x = 0;
 
-  Entry({double x, double y, ui.Image icon, Object data})
-      : this._x = x,
+  Entry({
+    double x = 0,
+    double y = 0,
+    ui.Image? icon,
+    required Object data,
+  })  : this._x = x,
         super(y: y, icon: icon, data: data);
 
   Entry copy() {

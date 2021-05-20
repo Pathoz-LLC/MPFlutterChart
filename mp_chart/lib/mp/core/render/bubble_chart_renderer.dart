@@ -20,10 +20,10 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
   BubbleDataProvider _provider;
 
-  BubbleChartRenderer(BubbleDataProvider chart, Animator animator,
-      ViewPortHandler viewPortHandler)
+  BubbleChartRenderer(
+      this._provider, Animator animator, ViewPortHandler viewPortHandler)
       : super(animator, viewPortHandler) {
-    _provider = chart;
+    // _provider = chart;
 
     renderPaint..style = PaintingStyle.fill;
 
@@ -46,11 +46,15 @@ class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
     }
   }
 
-  List<double> sizeBuffer = List(4);
-  List<double> pointBuffer = List(2);
+  List<double> sizeBuffer = List.filled(4, 0);
+  List<double> pointBuffer = List.filled(2, 0);
 
   double getShapeSize(
-      double entrySize, double maxSize, double reference, bool normalizeSize) {
+    double entrySize,
+    double maxSize,
+    double reference,
+    bool normalizeSize,
+  ) {
     final double factor = normalizeSize
         ? ((maxSize == 0) ? 1 : sqrt(entrySize / maxSize))
         : entrySize;
@@ -88,7 +92,11 @@ class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
       trans.pointValuesToPixel(pointBuffer);
 
       double shapeHalf = getShapeSize(
-              entry.size, dataSet.getMaxSize(), referenceSize, normalizeSize) /
+            entry.size,
+            dataSet.getMaxSize(),
+            referenceSize,
+            normalizeSize,
+          ) /
           2;
 
       if (!viewPortHandler.isInBoundsTop(pointBuffer[1] + shapeHalf) ||
@@ -190,8 +198,14 @@ class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
   @override
   void drawValue(Canvas c, String valueText, double x, double y, Color color,
       double textSize, TypeFace typeFace) {
-    valuePaint = PainterUtils.create(valuePaint, valueText, color, textSize,
-        fontFamily: typeFace?.fontFamily, fontWeight: typeFace?.fontWeight);
+    valuePaint = PainterUtils.create(
+      valuePaint,
+      valueText,
+      color,
+      textSize,
+      fontFamily: typeFace.fontFamily,
+      fontWeight: typeFace.fontWeight,
+    );
     valuePaint.layout();
     valuePaint.paint(
         c, Offset(x - valuePaint.width / 2, y - valuePaint.height));
@@ -207,13 +221,13 @@ class BubbleChartRenderer extends BarLineScatterCandleBubbleRenderer {
     double phaseY = animator.getPhaseY();
 
     for (Highlight high in indices) {
-      IBubbleDataSet set = bubbleData.getDataSetByIndex(high.dataSetIndex);
+      IBubbleDataSet? set = bubbleData.getDataSetByIndex(high.dataSetIndex);
 
       if (set == null || !set.isHighlightEnabled()) continue;
 
-      final BubbleEntry entry = set.getEntryForXValue2(high.x, high.y);
+      final BubbleEntry? entry = set.getEntryForXValue2(high.x, high.y);
 
-      if (entry.y != high.y) continue;
+      if (entry == null || entry.y != high.y) continue;
 
       if (!isInBoundsX(entry, set)) continue;
 

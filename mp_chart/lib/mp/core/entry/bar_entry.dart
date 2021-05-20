@@ -5,23 +5,30 @@ import 'package:mp_chart/mp/core/range.dart';
 
 class BarEntry extends Entry {
   /// the values the stacked barchart holds
-  List<double> _yVals;
+  List<double> _yVals = [];
 
   /// the ranges for the individual stack values - automatically calculated
-  List<Range> _ranges;
+  List<Range> _ranges = [];
 
   /// the sum of all negative values this entry (if stacked) contains
-  double _negativeSum;
+  double _negativeSum = 0;
 
   /// the sum of all positive values this entry (if stacked) contains
-  double _positiveSum;
+  double _positiveSum = 0;
 
-  BarEntry({double x, double y, ui.Image icon, Object data})
-      : super(x: x, y: y, icon: icon, data: data);
+  BarEntry({
+    double x = 0,
+    double y = 0,
+    ui.Image? icon,
+    required Object data,
+  }) : super(x: x, y: y, icon: icon, data: data);
 
-  BarEntry.fromListYVals(
-      {double x, List<double> vals, ui.Image icon, Object data})
-      : super(x: x, y: calcSum(vals), icon: icon, data: data) {
+  BarEntry.fromListYVals({
+    double x = 0,
+    List<double> vals = const [],
+    required ui.Image icon,
+    required Object data,
+  }) : super(x: x, y: calcSum(vals), icon: icon, data: data) {
     this._yVals = vals;
     calcPosNegSum();
     calcRanges();
@@ -51,11 +58,11 @@ class BarEntry extends Entry {
   ///
   /// @return
   bool isStacked() {
-    return _yVals != null;
+    return _yVals.isNotEmpty;
   }
 
   double getSumBelow(int stackIndex) {
-    if (_yVals == null) return 0;
+    // if (_yVals == null) return 0;
 
     double remainder = 0.0;
     int index = _yVals.length - 1;
@@ -72,7 +79,7 @@ class BarEntry extends Entry {
   double get positiveSum => _positiveSum;
 
   void calcPosNegSum() {
-    if (_yVals == null) {
+    if (_yVals.isEmpty) {
       _negativeSum = 0;
       _positiveSum = 0;
       return;
@@ -97,7 +104,7 @@ class BarEntry extends Entry {
   /// @param vals
   /// @return
   static double calcSum(List<double> vals) {
-    if (vals == null) return 0.0;
+    if (vals.isEmpty) return 0.0;
     double sum = 0.0;
     for (double f in vals) sum += f;
     return sum;
@@ -106,9 +113,9 @@ class BarEntry extends Entry {
   void calcRanges() {
     List<double> values = yVals;
 
-    if (values == null || values.length == 0) return;
-
-    _ranges = List(values.length);
+    if (values.length == 0) return; // values == null ||
+    var dflt = Range(0, 0);
+    _ranges = List.filled(values.length, dflt);
 
     double negRemain = -negativeSum;
     double posRemain = 0.0;

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:mp_chart/mp/core/axis/axis_base.dart';
 import 'package:mp_chart/mp/core/enums/x_axis_position.dart';
@@ -92,7 +93,7 @@ class XAxis extends AxisBase {
   }
 
   int getRequiredHeightSpace(TextPainter p) {
-    p = PainterUtils.create(p, null, null, textSize);
+    p = PainterUtils.create(p, '', Colors.transparent, textSize);
 
     int height = Utils.calcTextHeight(p, "A");
 

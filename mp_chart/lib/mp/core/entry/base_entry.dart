@@ -1,23 +1,28 @@
 import 'dart:ui' as ui;
+// import 'package:flutter/services.dart';
 
 abstract class BaseEntry {
   /// the y value
   double _y = 0;
 
   /// optional spot for additional data this Entry represents
-  Object _data;
+  late Object _data;
 
   /// optional icon image
-  ui.Image _icon;
+  ui.Image? _icon;
 
-  BaseEntry({double y, ui.Image icon, Object data}) {
+  BaseEntry({
+    double y = 0,
+    ui.Image? icon,
+    required Object data,
+  }) {
     this._y = y;
     this._icon = icon;
     this._data = data;
   }
 
   // ignore: unnecessary_getters_setters
-  ui.Image get mIcon => _icon;
+  ui.Image get mIcon => _icon!; // FIX ME with a default
 
   // ignore: unnecessary_getters_setters
   set mIcon(ui.Image value) {

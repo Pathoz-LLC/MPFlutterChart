@@ -31,8 +31,8 @@ class BarData extends BarLineScatterCandleBubbleData<IBarDataSet> {
           "BarData needs to hold at least 2 BarDataSets to allow grouping.");
     }
 
-    IBarDataSet max = getMaxEntryCountSet();
-    int maxEntryCount = max.getEntryCount();
+    IBarDataSet? max = getMaxEntryCountSet();
+    int maxEntryCount = max?.getEntryCount() ?? 0;
 
     double groupSpaceWidthHalf = groupSpace / 2.0;
     double barSpaceHalf = barSpace / 2.0;

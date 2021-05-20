@@ -14,14 +14,14 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 
 abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
   /// List representing all colors that are used for this DataSet
-  List<ui.Color> _colors;
+  List<ui.Color> _colors = [];
 
-  GradientColor _gradientColor;
+  GradientColor? _gradientColor;
 
-  List<GradientColor> _gradientColors;
+  List<GradientColor> _gradientColors = [];
 
   /// List representing all colors that are used for drawing the actual values for this DataSet
-  List<ui.Color> _valueColors;
+  List<ui.Color> _valueColors = [];
 
   /// label that describes the DataSet or the data the DataSet represents
   String _label = "DataSet";
@@ -33,15 +33,15 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
   bool _highlightEnabled = true;
 
   /// custom formatter that is used instead of the auto-formatter if set
-  ValueFormatter _valueFormatter;
+  ValueFormatter? _valueFormatter;
 
   /// the typeface used for the value text
-  TypeFace _valueTypeface;
+  late TypeFace _valueTypeface;
 
   LegendForm _form = LegendForm.DEFAULT;
   double _formSize = double.nan;
   double _formLineWidth = double.nan;
-  DashPathEffect _formLineDashEffect;
+  DashPathEffect? _formLineDashEffect;
 
   /// if true, y-values are drawn on the chart
   bool _drawValues = true;
@@ -60,8 +60,8 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
   /// Default constructor.
   BaseDataSet() {
-    _colors = List();
-    _valueColors = List();
+    // _colors = [];
+    // _valueColors = [];
     // default color
     _colors.add(ui.Color.fromARGB(255, 140, 234, 255));
     _valueColors.add(ColorUtils.BLACK);
@@ -71,8 +71,8 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
   ///
   /// @param label
   BaseDataSet.withLabel(String label) {
-    _colors = List();
-    _valueColors = List();
+    // _colors = List();
+    // _valueColors = List();
 
     // default color
     _colors.add(ui.Color.fromARGB(255, 140, 234, 255));
@@ -108,7 +108,7 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
   @override
   GradientColor getGradientColor1() {
-    return _gradientColor;
+    return _gradientColor!;
   }
 
   @override
@@ -140,7 +140,7 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
   ///
   /// @param color
   void addColor(ui.Color color) {
-    if (_colors == null) _colors = List();
+    if (_colors == null) _colors = [];
     _colors.add(color);
   }
 
@@ -196,7 +196,7 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
   /// Resets all colors of this DataSet and recreates the colors array.
   void resetColors() {
     if (_colors == null) {
-      _colors = List();
+      _colors = [];
     }
     _colors.clear();
   }
@@ -225,16 +225,16 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
   @override
   void setValueFormatter(ValueFormatter f) {
-    if (f == null)
-      return;
-    else
-      _valueFormatter = f;
+    // if (f == null)
+    //   return;
+    // else
+    _valueFormatter = f;
   }
 
   @override
   ValueFormatter getValueFormatter() {
     if (needsFormatter()) return Utils.getDefaultValueFormatter();
-    return _valueFormatter;
+    return _valueFormatter!;
   }
 
   @override
@@ -316,7 +316,7 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
   @override
   DashPathEffect getFormLineDashEffect() {
-    return _formLineDashEffect;
+    return _formLineDashEffect!;
   }
 
   @override
@@ -401,7 +401,8 @@ abstract class BaseDataSet<T extends Entry> implements IDataSet<T> {
 
   @override
   bool removeEntryByXValue(double xValue) {
-    T e = getEntryForXValue2(xValue, double.nan);
+    T? e = getEntryForXValue2(xValue, double.nan);
+    if (e == null) return false;
     return removeEntry1(e);
   }
 

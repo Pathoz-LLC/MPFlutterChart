@@ -15,7 +15,7 @@ abstract class LineScatterCandleRadarDataSet<T extends Entry>
   double _highlightLineWidth = 0.5;
 
   /// the path effect for dashed highlight-lines
-  DashPathEffect _highlightDashPathEffect;
+  DashPathEffect? _highlightDashPathEffect;
 
   /// the path effect for dashed highlight-lines
 //   DashPathEffect mHighlightDashPathEffect = null;
@@ -89,7 +89,7 @@ abstract class LineScatterCandleRadarDataSet<T extends Entry>
   }
 
   @override
-  DashPathEffect getDashPathEffectHighlight() {
+  DashPathEffect? getDashPathEffectHighlight() {
     return _highlightDashPathEffect;
   }
 
@@ -117,7 +117,7 @@ abstract class LineScatterCandleRadarDataSet<T extends Entry>
   /// and Cur's x value(Cur: Entry at index).
   @override
   bool addEntryByIndex(int index, T e) {
-    if(index < 0 || index > getEntryCount()){
+    if (index < 0 || index > getEntryCount()) {
       return false;
     }
 
@@ -126,17 +126,17 @@ abstract class LineScatterCandleRadarDataSet<T extends Entry>
       return addEntry(e);
     }
 
-    if(index == 0){
+    if (index == 0) {
       var cur = valueDatas[index];
       if (e.x >= cur.x) {
         return false;
       }
-    } else if(index == getEntryCount()){
+    } else if (index == getEntryCount()) {
       var pre = valueDatas[index - 1];
-      if(e.x <= pre.x){
+      if (e.x <= pre.x) {
         return false;
       }
-    }else {
+    } else {
       var cur = valueDatas[index];
       var pre = valueDatas[index - 1];
       if (e.x >= cur.x || e.x <= pre.x) {

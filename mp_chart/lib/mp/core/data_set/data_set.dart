@@ -4,7 +4,7 @@ import 'package:mp_chart/mp/core/enums/rounding.dart';
 
 abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
   /// the entries that this DataSet represents / holds together
-  List<T> _values;
+  late List<T> _values = [];
 
   /// maximum y-value in the value array
   double _yMax = -double.infinity;
@@ -24,17 +24,18 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
   ///
   /// @param values
   /// @param label
-  DataSet(List<T> values, String label) : super.withLabel(label) {
-    this._values = values;
-
-    if (_values == null) _values = List<T>();
+  DataSet(
+    List<T>? values,
+    String label,
+  ) : super.withLabel(label) {
+    if (values != null) this._values = values;
 
     calcMinMax();
   }
 
   @override
   void calcMinMax() {
-    if (_values == null || _values.isEmpty) return;
+    if (_values.isEmpty) return;
 
     _yMax = -double.infinity;
     _yMin = double.infinity;
@@ -48,7 +49,7 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   void calcMinMaxY(double fromX, double toX) {
-    if (_values == null || _values.isEmpty) return;
+    if (_values.isEmpty) return;
 
     _yMax = -double.infinity;
     _yMin = double.infinity;
@@ -66,7 +67,7 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
   ///
   /// @param e
   void calcMinMax1(T e) {
-    if (e == null) return;
+    // if (e == null) return;
 
     calcMinMaxX1(e);
 
@@ -87,7 +88,7 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   int getEntryCount() {
-    return _values == null ? 0 : _values.length;
+    return _values.length;
   }
 
   List<T> get values => _values;
@@ -121,10 +122,11 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
   ///
   /// @return
   String toSimpleString() {
+    String lbl = getLabel(); // ?? "";
     StringBuffer buffer = StringBuffer();
-    buffer.write("DataSet, label: " +
-        (getLabel() == null ? "" : getLabel()) +
-        ", entries:${_values.length}\n");
+    buffer.write(
+      "DataSet, label: " + lbl + ", entries:${_values.length}\n",
+    );
     return buffer.toString();
   }
 
@@ -166,11 +168,11 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   void addEntryOrdered(T e) {
-    if (e == null) return;
+    // if (e == null) return;
 
-    if (_values == null) {
-      _values = List<T>();
-    }
+    // if (_values.isEmpty) {
+    //   _values = [];
+    // }
 
     calcMinMax1(e);
 
@@ -190,12 +192,12 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   bool addEntry(T e) {
-    if (e == null) return false;
+    // if (e == null) return false;
 
     List<T> valueDatas = values;
-    if (valueDatas == null) {
-      valueDatas = List<T>();
-    }
+    // if (valueDatas == null) {
+    //   valueDatas = [];
+    // }
 
     calcMinMax1(e);
 
@@ -231,9 +233,9 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   bool removeEntry1(T e) {
-    if (e == null) return false;
+    // if (e == null) return false;
 
-    if (_values == null) return false;
+    if (_values.isEmpty) return false;
 
     // remove the entry
     bool removed = _values.remove(e);
@@ -247,18 +249,22 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   int getEntryIndex2(Entry e) {
-    return _values.indexOf(e);
+    return _values.indexOf(e as T);
   }
 
   @override
-  T getEntryForXValue1(double xValue, double closestToY, Rounding rounding) {
+  T? getEntryForXValue1(
+    double xValue,
+    double closestToY,
+    Rounding rounding,
+  ) {
     int index = getEntryIndex1(xValue, closestToY, rounding);
     if (index > -1) return _values[index];
     return null;
   }
 
   @override
-  T getEntryForXValue2(double xValue, double closestToY) {
+  T? getEntryForXValue2(double xValue, double closestToY) {
     return getEntryForXValue1(xValue, closestToY, Rounding.CLOSEST);
   }
 
@@ -268,8 +274,12 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
   }
 
   @override
-  int getEntryIndex1(double xValue, double closestToY, Rounding rounding) {
-    if (_values == null || _values.isEmpty) return -1;
+  int getEntryIndex1(
+    double xValue,
+    double closestToY,
+    Rounding rounding,
+  ) {
+    if (_values.isEmpty) return -1;
 
     int low = 0;
     int high = _values.length - 1;
@@ -352,7 +362,7 @@ abstract class DataSet<T extends Entry> extends BaseDataSet<T> {
 
   @override
   List<T> getEntriesForXValue(double xValue) {
-    List<T> entries = List<T>();
+    List<T> entries = [];
 
     int low = 0;
     int high = _values.length - 1;

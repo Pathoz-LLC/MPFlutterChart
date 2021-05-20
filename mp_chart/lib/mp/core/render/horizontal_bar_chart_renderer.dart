@@ -21,17 +21,24 @@ import 'package:mp_chart/mp/core/poolable/point.dart';
 import 'package:mp_chart/mp/core/utils/utils.dart';
 
 class HorizontalBarChartRenderer extends BarChartRenderer {
+  //
   HorizontalBarChartRenderer(
-      BarDataProvider chart, Animator animator, ViewPortHandler viewPortHandler)
-      : super(chart, animator, viewPortHandler);
+    BarDataProvider chart,
+    Animator animator,
+    ViewPortHandler viewPortHandler,
+  ) : super(chart, animator, viewPortHandler);
 
   @override
   void initBuffers() {
     BarData barData = provider.getBarData();
-    barBuffers = List(barData.getDataSetCount());
+    // barBuffers = List(barData.getDataSetCount());
+    var dfltBb = BarBuffer(0, 0, false);
+    barBuffers = List<BarBuffer>.filled(barData.getDataSetCount(), dfltBb);
 
     for (int i = 0; i < barBuffers.length; i++) {
-      IBarDataSet set = barData.getDataSetByIndex(i);
+      IBarDataSet? set = barData.getDataSetByIndex(i);
+      if (set == null) continue;
+
       barBuffers[i] = HorizontalBarBuffer(
           set.getEntryCount() * 4 * (set.isStacked() ? set.getStackSize() : 1),
           barData.getDataSetCount(),
@@ -65,8 +72,10 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
       double x;
 
       for (int i = 0,
-              count = min(((dataSet.getEntryCount()) * phaseX).ceil(),
-                  dataSet.getEntryCount());
+              count = min(
+        ((dataSet.getEntryCount()) * phaseX).ceil(),
+        dataSet.getEntryCount(),
+      );
           i < count;
           i++) {
         BarEntry e = dataSet.getEntryForIndex(i);
@@ -290,7 +299,7 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
                   c, Offset(px, py), entry.mIcon, Size(15, 15), drawPaint);
             }
           } else {
-            List<double> transformed = List(vals.length * 2);
+            List<double> transformed = List.filled(vals.length * 2, 0);
 
             double posY = 0;
             double negY = -entry.negativeSum;
@@ -377,8 +386,14 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
   @override
   void drawValue(Canvas c, String valueText, double x, double y, Color color,
       double textSize, TypeFace typeFace) {
-    valuePaint = PainterUtils.create(valuePaint, valueText, color, textSize,
-        fontFamily: typeFace?.fontFamily, fontWeight: typeFace?.fontWeight);
+    valuePaint = PainterUtils.create(
+      valuePaint,
+      valueText,
+      color,
+      textSize,
+      fontFamily: typeFace.fontFamily,
+      fontWeight: typeFace.fontWeight,
+    );
     valuePaint.layout();
     valuePaint.paint(c, Offset(x, y - valuePaint.height / 2));
   }

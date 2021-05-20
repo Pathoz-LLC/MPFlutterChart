@@ -12,7 +12,10 @@ class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry>
 
   double _highlightCircleWidth = 2.5;
 
-  BubbleDataSet(List<BubbleEntry> yVals, String label) : super(yVals, label);
+  BubbleDataSet(
+    List<BubbleEntry> yVals,
+    String label,
+  ) : super(yVals, label);
 
   @override
   void setHighlightCircleWidth(double width) {
@@ -37,7 +40,7 @@ class BubbleDataSet extends BarLineScatterCandleBubbleDataSet<BubbleEntry>
 
   @override
   DataSet<BubbleEntry> copy1() {
-    List<BubbleEntry> entries = List<BubbleEntry>();
+    List<BubbleEntry> entries = [];
     for (int i = 0; i < values.length; i++) {
       entries.add(values[i].copy());
     }

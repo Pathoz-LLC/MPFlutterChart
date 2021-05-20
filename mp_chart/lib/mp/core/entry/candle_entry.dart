@@ -14,15 +14,20 @@ class CandleEntry extends Entry {
   /// open value
   double _open = 0;
 
-  CandleEntry(
-      {double x,
-      double shadowH,
-      double shadowL,
-      double open,
-      double close,
-      ui.Image icon,
-      Object data})
-      : super(x: x, y: (shadowH + shadowL) / 2, icon: icon, data: data) {
+  CandleEntry({
+    double x = 0,
+    double shadowH = 0,
+    double shadowL = 0,
+    double open = 0,
+    double close = 0,
+    ui.Image? icon,
+    required Object data,
+  }) : super(
+          x: x,
+          y: (shadowH + shadowL) / 2,
+          icon: icon,
+          data: data,
+        ) {
     this._shadowHigh = shadowH;
     this._shadowLow = shadowL;
     this._open = open;

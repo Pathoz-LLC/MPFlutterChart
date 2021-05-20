@@ -9,8 +9,10 @@ abstract class BarLineScatterCandleBubbleDataSet<T extends Entry>
     extends DataSet<T> implements IBarLineScatterCandleBubbleDataSet<T> {
   Color _highLightColor = Color.fromARGB(255, 255, 187, 115);
 
-  BarLineScatterCandleBubbleDataSet(List<T> yVals, String label)
-      : super(yVals, label);
+  BarLineScatterCandleBubbleDataSet(
+    List<T> yVals,
+    String label,
+  ) : super(yVals, label);
 
   /// Sets the color that is used for drawing the highlight indicators. Dont
   /// forget to resolve the color using getResources().getColor(...) or

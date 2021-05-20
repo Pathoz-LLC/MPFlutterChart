@@ -18,5 +18,5 @@ mixin ILineScatterCandleRadarDataSet<T extends Entry>
 
   /// Returns the DashPathEffect that is used for highlighting.
   /// @return
-  DashPathEffect getDashPathEffectHighlight();
+  DashPathEffect? getDashPathEffectHighlight();
 }

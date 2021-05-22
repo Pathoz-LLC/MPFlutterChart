@@ -25,9 +25,13 @@ class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     if (viewPortHandler.contentWidth() > 10 &&
         !viewPortHandler.isFullyZoomedOutY()) {
       MPPointD p1 = trans.getValuesByTouchPoint1(
-          viewPortHandler.contentLeft(), viewPortHandler.contentBottom());
+        viewPortHandler.contentLeft(),
+        viewPortHandler.contentBottom(),
+      );
       MPPointD p2 = trans.getValuesByTouchPoint1(
-          viewPortHandler.contentLeft(), viewPortHandler.contentTop());
+        viewPortHandler.contentLeft(),
+        viewPortHandler.contentTop(),
+      );
 
       if (inverted) {
         min = p2.y;
@@ -47,14 +51,15 @@ class XAxisRendererHorizontalBarChart extends XAxisRenderer {
   @override
   void computeSize() {
     axisLabelPaint = PainterUtils.create(
-        axisLabelPaint,
-        null,
-        axisLabelPaint.text.style.color == null
-            ? ColorUtils.HOLO_GREEN_DARK
-            : axisLabelPaint.text.style.color,
-        xAxis.textSize,
-        fontWeight: xAxis.typeface?.fontWeight,
-        fontFamily: xAxis.typeface?.fontFamily);
+      axisLabelPaint,
+      null,
+      axisLabelPaint.text?.style?.color == null
+          ? ColorUtils.HOLO_GREEN_DARK
+          : axisLabelPaint.text!.style!.color!,
+      xAxis.textSize,
+      fontWeight: xAxis.typeface.fontWeight,
+      fontFamily: xAxis.typeface.fontFamily,
+    );
 
     String longest = xAxis.getLongestLabel();
 
@@ -81,9 +86,13 @@ class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     if (!xAxis.enabled || !xAxis.drawLabels) return;
 
     axisLabelPaint = PainterUtils.create(
-        axisLabelPaint, null, xAxis.textColor, xAxis.textSize,
-        fontFamily: xAxis.typeface?.fontFamily,
-        fontWeight: xAxis.typeface?.fontWeight);
+      axisLabelPaint,
+      null,
+      xAxis.textColor,
+      xAxis.textSize,
+      fontFamily: xAxis.typeface.fontFamily,
+      fontWeight: xAxis.typeface.fontWeight,
+    );
 
     MPPointF pointF = MPPointF.getInstance1(0, 0);
 
@@ -122,7 +131,7 @@ class XAxisRendererHorizontalBarChart extends XAxisRenderer {
     final double labelRotationAngleDegrees = xAxis.labelRotationAngle;
     bool centeringEnabled = xAxis.isCenterAxisLabelsEnabled();
 
-    List<double> positions = List(xAxis.entryCount * 2);
+    List<double> positions = List.filled(xAxis.entryCount * 2, 0);
 
     for (int i = 0; i < positions.length; i += 2) {
       // only fill x values

@@ -50,7 +50,7 @@ abstract class DataRenderer extends Renderer {
   }
 
   bool isDrawingValuesAllowed(ChartInterface chart) {
-    return chart.getData().getEntryCount() <
+    return (chart.getData()?.getEntryCount() ?? 0) <
         chart.getMaxVisibleCount() * viewPortHandler.getScaleX();
   }
 

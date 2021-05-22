@@ -11,19 +11,22 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 import 'package:mp_chart/mp/core/value_formatter/default_value_formatter.dart';
 
 class RadarChartMarker implements IMarker {
-  Entry _entry;
+  late Entry _entry;
   // ignore: unused_field
-  Highlight _highlight;
+  late Highlight _highlight;
   double _dx = 0.0;
   double _dy = 0.0;
 
-  DefaultValueFormatter _formatter;
+  late DefaultValueFormatter _formatter;
   Color _textColor;
   Color _backColor;
   double _fontSize;
 
-  RadarChartMarker({Color textColor, Color backColor, double fontSize})
-      : _textColor = textColor,
+  RadarChartMarker({
+    required Color textColor,
+    required Color backColor,
+    required double fontSize,
+  })  : _textColor = textColor,
         _backColor = backColor,
         _fontSize = fontSize {
     _formatter = DefaultValueFormatter(0);

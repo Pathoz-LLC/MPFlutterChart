@@ -33,10 +33,9 @@ abstract class LineScatterCandleRadarRenderer
       _highlightLinePath.moveTo(x, viewPortHandler.contentTop());
       _highlightLinePath.lineTo(x, viewPortHandler.contentBottom());
 
-      if (set.getDashPathEffectHighlight() != null) {
-        _highlightLinePath = set
-            .getDashPathEffectHighlight()
-            .convert2DashPath(_highlightLinePath);
+      var peh = set.getDashPathEffectHighlight();
+      if (peh != null) {
+        _highlightLinePath = peh.convert2DashPath(_highlightLinePath);
       }
       c.drawPath(_highlightLinePath, highlightPaint);
     }
@@ -48,10 +47,9 @@ abstract class LineScatterCandleRadarRenderer
       _highlightLinePath.moveTo(viewPortHandler.contentLeft(), y);
       _highlightLinePath.lineTo(viewPortHandler.contentRight(), y);
 
-      if (set.getDashPathEffectHighlight() != null) {
-        _highlightLinePath = set
-            .getDashPathEffectHighlight()
-            .convert2DashPath(_highlightLinePath);
+      var peh = set.getDashPathEffectHighlight();
+      if (peh != null) {
+        _highlightLinePath = peh.convert2DashPath(_highlightLinePath);
       }
       c.drawPath(_highlightLinePath, highlightPaint);
     }

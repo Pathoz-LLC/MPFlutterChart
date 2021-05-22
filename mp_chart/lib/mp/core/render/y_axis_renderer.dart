@@ -16,12 +16,15 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 import 'package:mp_chart/mp/core/view_port.dart';
 
 class YAxisRenderer extends AxisRenderer {
-  YAxis _yAxis;
+  late YAxis _yAxis;
 
-  Paint _zeroLinePaint;
+  late Paint _zeroLinePaint;
 
-  YAxisRenderer(ViewPortHandler viewPortHandler, YAxis yAxis, Transformer trans)
-      : super(viewPortHandler, trans, yAxis) {
+  YAxisRenderer(
+    ViewPortHandler viewPortHandler,
+    YAxis yAxis,
+    Transformer? trans,
+  ) : super(viewPortHandler, trans, yAxis) {
     this._yAxis = yAxis;
 
     if (viewPortHandler != null) {
@@ -59,8 +62,8 @@ class YAxisRenderer extends AxisRenderer {
 
     axisLabelPaint = PainterUtils.create(
         axisLabelPaint, null, _yAxis.textColor, _yAxis.textSize,
-        fontFamily: _yAxis.typeface?.fontFamily,
-        fontWeight: _yAxis.typeface?.fontWeight);
+        fontFamily: _yAxis.typeface.fontFamily,
+        fontWeight: _yAxis.typeface.fontWeight);
     if (dependency == AxisDependency.LEFT) {
       if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
         xPos = viewPortHandler.offsetLeft();
@@ -130,8 +133,10 @@ class YAxisRenderer extends AxisRenderer {
     for (int i = from; i < to; i++) {
       String text = _yAxis.getFormattedLabel(i);
 
-      axisLabelPaint.text =
-          TextSpan(text: text, style: axisLabelPaint.text.style);
+      axisLabelPaint.text = TextSpan(
+        text: text,
+        style: axisLabelPaint.text?.style,
+      );
       axisLabelPaint.layout();
       if (axisDependency == AxisDependency.LEFT) {
         if (position == YAxisLabelPosition.OUTSIDE_CHART) {
@@ -227,7 +232,7 @@ class YAxisRenderer extends AxisRenderer {
     return p;
   }
 
-  List<double> mGetTransformedPositionsBuffer = List(2);
+  List<double> mGetTransformedPositionsBuffer = List.filled(2, 0);
 
   /// Transforms the values contained in the axis entries to screen pixels and returns them in form of a double array
   /// of x- and y-coordinates.
@@ -235,7 +240,7 @@ class YAxisRenderer extends AxisRenderer {
   /// @return
   List<double> getTransformedPositions() {
     if (mGetTransformedPositionsBuffer.length != _yAxis.entryCount * 2) {
-      mGetTransformedPositionsBuffer = List(_yAxis.entryCount * 2);
+      mGetTransformedPositionsBuffer = List.filled(_yAxis.entryCount * 2, 0);
     }
     List<double> positions = mGetTransformedPositionsBuffer;
 
@@ -283,7 +288,7 @@ class YAxisRenderer extends AxisRenderer {
   }
 
   Path _renderLimitLines = Path();
-  List<double> _renderLimitLinesBuffer = List(2);
+  List<double> _renderLimitLinesBuffer = List.filled(2, 0);
   Rect _limitLineClippingRect = Rect.zero;
 
   // ignore: unnecessary_getters_setters
@@ -346,8 +351,8 @@ class YAxisRenderer extends AxisRenderer {
       if (label != null && label.isNotEmpty) {
         TextPainter painter = PainterUtils.create(
             null, label, l.textColor, l.textSize,
-            fontWeight: l.typeface?.fontWeight,
-            fontFamily: l.typeface?.fontFamily);
+            fontWeight: l.typeface.fontWeight,
+            fontFamily: l.typeface.fontFamily);
         final double labelLineHeight =
             Utils.calcTextHeight(painter, label).toDouble();
         double xOffset = Utils.convertDpToPixel(4) + l.xOffset;

@@ -16,11 +16,11 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 
 class Legend extends ComponentBase {
   /// The legend entries array
-  List<LegendEntry> _entries = List();
+  List<LegendEntry> _entries = [];
 
   /// Entries that will be appended to the end of the auto calculated entries after calculating the legend.
   /// (if the legend has already been calculated, you will need to call notifyDataSetChanged() to let the changes take effect)
-  List<LegendEntry> _extraEntries;
+  late List<LegendEntry> _extraEntries;
 
   /// Are the legend labels/colors a custom value or auto calculated? If false,
   /// then it's auto, if true, then custom. default false (automatic legend)
@@ -45,7 +45,7 @@ class Legend extends ComponentBase {
   double _formLineWidth = 3;
 
   /// Line dash path effect used for shapes that consist of lines.
-  DashPathEffect _formLineDashEffect;
+  late DashPathEffect _formLineDashEffect;
 
   /// the space between the legend entries on a horizontal axis, default 6f
   double _xEntrySpace = 6;
@@ -77,9 +77,9 @@ class Legend extends ComponentBase {
   /// flag that indicates if word wrapping is enabled
   bool _wordWrapEnabled = false;
 
-  List<FSize> _calculatedLabelSizes = List(16);
-  List<bool> _calculatedLabelBreakPoints = List(16);
-  List<FSize> _calculatedLineSizes = List(16);
+  List<FSize> _calculatedLabelSizes = List.filled(16, FSize.getInstance(0, 0));
+  List<bool> _calculatedLabelBreakPoints = List.filled(16, false);
+  List<FSize> _calculatedLineSizes = List.filled(16, FSize.getInstance(0, 0));
 
   /// default constructor
   Legend() {
@@ -164,7 +164,7 @@ class Legend extends ComponentBase {
   /// (if the legend has already been calculated, you will need to call notifyDataSetChanged()
   ///   to let the changes take effect)
   void setExtra2(List<Color> colors, List<String> labels) {
-    List<LegendEntry> entries = List();
+    List<LegendEntry> entries = [];
     for (int i = 0; i < min(colors.length, labels.length); i++) {
       final LegendEntry entry = LegendEntry.empty();
       entry.formColor = colors[i];
@@ -423,9 +423,9 @@ class Legend extends ComponentBase {
           double requiredWidth = 0;
           int stackedStartIndex = -1;
 
-          _calculatedLabelBreakPoints = List();
-          _calculatedLabelSizes = List();
-          _calculatedLineSizes = List();
+          _calculatedLabelBreakPoints = [];
+          _calculatedLabelSizes = [];
+          _calculatedLineSizes = [];
 
           for (int i = 0; i < entryCount; i++) {
             LegendEntry e = entries[i];

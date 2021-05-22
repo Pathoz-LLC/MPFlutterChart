@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 
 import 'package:flutter/painting.dart';
 import 'package:mp_chart/mp/core/entry/entry.dart';
@@ -11,27 +12,35 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 import 'package:mp_chart/mp/core/value_formatter/default_value_formatter.dart';
 
 class LineChartMarker implements IMarker {
-  Entry _entry;
+  late Entry _entry;
   // ignore: unused_field
-  Highlight _highlight;
+  late Highlight _highlight;
   double _dx = 0.0;
   double _dy = 0.0;
 
-  DefaultValueFormatter _formatter;
+  late DefaultValueFormatter _formatter;
   Color _textColor;
   Color _backColor;
-  double _fontSize;
+  late double _fontSize;
 
-  LineChartMarker({Color textColor, Color backColor, double fontSize})
-      : _textColor = textColor,
-        _backColor = backColor,
-        _fontSize = fontSize {
+  LineChartMarker({
+    Color textColor = ColorUtils.PURPLE,
+    Color backColor = Colors.white,
+    double? fontSize,
+  })  : _textColor = textColor,
+        _backColor = backColor
+  // _fontSize = fontSize
+  {
     _formatter = DefaultValueFormatter(0);
-    this._textColor ??= ColorUtils.PURPLE;
+    // this._textColor ??= ColorUtils.PURPLE;
 //    _backColor ??= Color.fromARGB((_textColor.alpha * 0.5).toInt(),
 //        _textColor.red, _textColor.green, _textColor.blue);
-    this._backColor ??= ColorUtils.WHITE;
-    this._fontSize ??= Utils.convertDpToPixel(10);
+    // this._backColor ??= ColorUtils.WHITE;
+    if (fontSize == null) {
+      this._fontSize = Utils.convertDpToPixel(10);
+    } else {
+      this._fontSize = fontSize;
+    }
   }
 
   @override

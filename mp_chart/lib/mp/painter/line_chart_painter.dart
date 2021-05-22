@@ -128,6 +128,6 @@ class LineChartPainter extends BarLineChartBasePainter<LineData>
 
   @override
   LineData getLineData() {
-    return getData();
+    return getData() as LineData;
   }
 }

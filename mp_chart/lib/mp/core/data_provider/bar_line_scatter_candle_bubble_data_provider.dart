@@ -12,5 +12,5 @@ mixin BarLineScatterCandleBubbleDataProvider implements ChartInterface {
 
   double getHighestVisibleX();
 
-  BarLineScatterCandleBubbleData getData();
+  BarLineScatterCandleBubbleData? getData();
 }

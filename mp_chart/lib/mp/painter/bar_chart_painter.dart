@@ -149,8 +149,8 @@ class BarChartPainter extends BarLineChartBasePainter<BarData>
     super.initDefaultWithData();
     highlighter = BarHighlighter(this);
     renderer = BarChartRenderer(this, animator, viewPortHandler);
-    xAxis?.spaceMin = (0.5);
-    xAxis?.spaceMax = (0.5);
+    xAxis.spaceMin = (0.5);
+    xAxis.spaceMax = (0.5);
   }
 
   @override
@@ -177,11 +177,11 @@ class BarChartPainter extends BarLineChartBasePainter<BarData>
   /// @param y
   /// @return
   @override
-  Highlight getHighlightByTouchPoint(double x, double y) {
+  Highlight? getHighlightByTouchPoint(double x, double y) {
     if (getBarData() == null) {
       return null;
     } else {
-      Highlight h = highlighter.getHighlight(x, y);
+      Highlight? h = highlighter.getHighlight(x, y);
       if (h == null || !isHighlightFullBarEnabled()) return h;
 
       // For isHighlightFullBarEnabled, remove stackIndex
@@ -204,7 +204,7 @@ class BarChartPainter extends BarLineChartBasePainter<BarData>
   Rect getBarBounds(BarEntry e) {
     Rect bounds = Rect.zero;
 
-    IBarDataSet set = getBarData().getDataSetForEntry(e);
+    IBarDataSet? set = getBarData().getDataSetForEntry(e);
 
     if (set == null) {
       bounds = Rect.fromLTRB(double.minPositive, double.minPositive,
@@ -278,6 +278,6 @@ class BarChartPainter extends BarLineChartBasePainter<BarData>
 
   @override
   BarData getBarData() {
-    return getData();
+    return getData() as BarData;
   }
 }

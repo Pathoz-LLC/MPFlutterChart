@@ -19,34 +19,36 @@ import 'package:mp_chart/mp/core/poolable/point.dart';
 import 'package:mp_chart/mp/core/utils/utils.dart';
 
 class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
-  ScatterDataProvider _provider;
+  ScatterDataProvider _dataProvider;
 
-  ScatterChartRenderer(ScatterDataProvider chart, Animator animator,
-      ViewPortHandler viewPortHandler)
+  ScatterChartRenderer(
+      this._dataProvider, Animator animator, ViewPortHandler viewPortHandler)
       : super(animator, viewPortHandler) {
-    _provider = chart;
+    // _provider = chart;
   }
 
-  ScatterDataProvider get provider => _provider;
+  ScatterDataProvider get provider => _dataProvider;
 
   @override
   void initBuffers() {}
 
   @override
   void drawData(Canvas c) {
-    ScatterData scatterData = _provider.getScatterData();
+    ScatterData? scatterData = _dataProvider.getScatterData();
+    if (scatterData == null) return;
 
     for (IScatterDataSet set in scatterData.dataSets) {
       if (set.isVisible()) drawDataSet(c, set);
     }
   }
 
-  List<double> mPixelBuffer = List(2);
+  List<double> mPixelBuffer = List.filled(2, 0);
 
   void drawDataSet(Canvas c, IScatterDataSet dataSet) {
     if (dataSet.getEntryCount() < 1) return;
 
-    Transformer trans = _provider.getTransformer(dataSet.getAxisDependency());
+    Transformer trans =
+        _dataProvider.getTransformer(dataSet.getAxisDependency());
 
     double phaseY = animator.getPhaseY();
 
@@ -80,10 +82,15 @@ class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
   @override
   void drawValues(Canvas c) {
     // if values are drawn
-    if (isDrawingValuesAllowed(_provider)) {
-      List<IScatterDataSet> dataSets = _provider.getScatterData().dataSets;
+    if (isDrawingValuesAllowed(_dataProvider)) {
+      List<IScatterDataSet> dataSets =
+          _dataProvider.getScatterData()?.dataSets ?? [];
 
-      for (int i = 0; i < _provider.getScatterData().getDataSetCount(); i++) {
+      if (dataSets == null) return;
+
+      for (int i = 0;
+          i < (_dataProvider.getScatterData()?.getDataSetCount() ?? 0);
+          i++) {
         IScatterDataSet dataSet = dataSets[i];
 
         if (!shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) continue;
@@ -91,9 +98,9 @@ class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
         // apply the text-styling defined by the DataSet
         applyValueTextStyle(dataSet);
 
-        xBounds.set(_provider, dataSet);
+        xBounds.set(_dataProvider, dataSet);
 
-        List<double> positions = _provider
+        List<double> positions = _dataProvider
             .getTransformer(dataSet.getAxisDependency())
             .generateTransformedValuesScatter(dataSet, animator.getPhaseX(),
                 animator.getPhaseY(), xBounds.min, xBounds.max);
@@ -146,8 +153,14 @@ class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
   @override
   void drawValue(Canvas c, String valueText, double x, double y, Color color,
       double textSize, TypeFace typeFace) {
-    valuePaint = PainterUtils.create(valuePaint, valueText, color, textSize,
-        fontFamily: typeFace?.fontFamily, fontWeight: typeFace?.fontWeight);
+    valuePaint = PainterUtils.create(
+      valuePaint,
+      valueText,
+      color,
+      textSize,
+      fontFamily: typeFace.fontFamily,
+      fontWeight: typeFace.fontWeight,
+    );
     valuePaint.layout();
     valuePaint.paint(
         c, Offset(x - valuePaint.width / 2, y - valuePaint.height));
@@ -158,18 +171,19 @@ class ScatterChartRenderer extends LineScatterCandleRadarRenderer {
 
   @override
   void drawHighlighted(Canvas c, List<Highlight> indices) {
-    ScatterData scatterData = _provider.getScatterData();
+    ScatterData? scatterData = _dataProvider.getScatterData();
+    if (scatterData == null) return;
 
     for (Highlight high in indices) {
-      IScatterDataSet set = scatterData.getDataSetByIndex(high.dataSetIndex);
+      IScatterDataSet? set = scatterData.getDataSetByIndex(high.dataSetIndex);
 
       if (set == null || !set.isHighlightEnabled()) continue;
 
-      final Entry e = set.getEntryForXValue2(high.x, high.y);
+      final Entry? e = set.getEntryForXValue2(high.x, high.y);
 
-      if (!isInBoundsX(e, set)) continue;
+      if (e == null || !isInBoundsX(e, set)) continue;
 
-      MPPointD pix = _provider
+      MPPointD pix = _dataProvider
           .getTransformer(set.getAxisDependency())
           .getPixelForValues(e.x, e.y * animator.getPhaseY());
 

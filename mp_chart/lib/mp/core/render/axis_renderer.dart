@@ -16,7 +16,7 @@ abstract class AxisRenderer extends Renderer {
   AxisBase _axis;
 
   /// transformer to transform values to screen pixels and return */
-  Transformer _trans;
+  late Transformer _trans;
 
   /// paint object for the grid lines
   late Paint _gridPaint;
@@ -32,7 +32,7 @@ abstract class AxisRenderer extends Renderer {
 
   AxisRenderer(
     ViewPortHandler viewPortHandler,
-    this._trans,
+    Transformer? trans,
     this._axis,
   ) : super(viewPortHandler) {
     // this._trans = trans;
@@ -42,6 +42,10 @@ abstract class AxisRenderer extends Renderer {
       ..color = Color.fromARGB(90, 160, 160, 160)
       ..strokeWidth = 1
       ..style = PaintingStyle.stroke;
+
+    if (trans != null) {
+      this._trans = trans;
+    }
 
     _axisLabelPaint = PainterUtils.create(null, null, ColorUtils.BLACK, null);
 

@@ -40,9 +40,9 @@ class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
   @override
   void drawData(Canvas c) {
-    CandleData candleData = _provider.getCandleData();
+    CandleData? candleData = _provider.getCandleData();
 
-    for (ICandleDataSet set in candleData.dataSets) {
+    for (ICandleDataSet set in candleData?.dataSets ?? []) {
       if (set.isVisible()) drawDataSet(c, set);
     }
   }
@@ -229,7 +229,7 @@ class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
   void drawValues(Canvas c) {
     // if values are drawn
     if (isDrawingValuesAllowed(_provider)) {
-      List<ICandleDataSet> dataSets = _provider.getCandleData().dataSets;
+      List<ICandleDataSet> dataSets = _provider.getCandleData()?.dataSets ?? [];
 
       for (int i = 0; i < dataSets.length; i++) {
         ICandleDataSet dataSet = dataSets[i];
@@ -311,10 +311,10 @@ class CandleStickChartRenderer extends LineScatterCandleRadarRenderer {
 
   @override
   void drawHighlighted(Canvas c, List<Highlight> indices) {
-    CandleData candleData = _provider.getCandleData();
+    CandleData? candleData = _provider.getCandleData();
 
     for (Highlight high in indices) {
-      ICandleDataSet? set = candleData.getDataSetByIndex(high.dataSetIndex);
+      ICandleDataSet? set = candleData?.getDataSetByIndex(high.dataSetIndex);
 
       if (set == null || !set.isHighlightEnabled()) continue;
 

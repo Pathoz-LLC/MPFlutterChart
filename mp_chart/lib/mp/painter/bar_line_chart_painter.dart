@@ -389,52 +389,56 @@ abstract class BarLineChartBasePainter<
           switch (legend.horizontalAlignment) {
             case LegendHorizontalAlignment.LEFT:
               offsets = Rect.fromLTRB(
-                  min(
-                          legend.neededWidth,
-                          viewPortHandler.getChartWidth() *
-                              legend.maxSizePercent) +
-                      legend.xOffset,
-                  0.0,
-                  0.0,
-                  0.0);
+                min(
+                        legend.neededWidth,
+                        viewPortHandler.getChartWidth() *
+                            legend.maxSizePercent) +
+                    legend.xOffset,
+                0.0,
+                0.0,
+                0.0,
+              );
               break;
 
             case LegendHorizontalAlignment.RIGHT:
               offsets = Rect.fromLTRB(
-                  0.0,
-                  0.0,
-                  min(
-                          legend.neededWidth,
-                          viewPortHandler.getChartWidth() *
-                              legend.maxSizePercent) +
-                      legend.xOffset,
-                  0.0);
+                0.0,
+                0.0,
+                min(
+                        legend.neededWidth,
+                        viewPortHandler.getChartWidth() *
+                            legend.maxSizePercent) +
+                    legend.xOffset,
+                0.0,
+              );
               break;
 
             case LegendHorizontalAlignment.CENTER:
               switch (legend.verticalAlignment) {
                 case LegendVerticalAlignment.TOP:
                   offsets = Rect.fromLTRB(
-                      0.0,
-                      min(
-                              legend.neededHeight,
-                              viewPortHandler.getChartHeight() *
-                                  legend.maxSizePercent) +
-                          legend.yOffset,
-                      0.0,
-                      0.0);
+                    0.0,
+                    min(
+                            legend.neededHeight,
+                            viewPortHandler.getChartHeight() *
+                                legend.maxSizePercent) +
+                        legend.yOffset,
+                    0.0,
+                    0.0,
+                  );
                   break;
 
                 case LegendVerticalAlignment.BOTTOM:
                   offsets = Rect.fromLTRB(
-                      0.0,
-                      0.0,
-                      0.0,
-                      min(
-                              legend.neededHeight,
-                              viewPortHandler.getChartHeight() *
-                                  legend.maxSizePercent) +
-                          legend.yOffset);
+                    0.0,
+                    0.0,
+                    0.0,
+                    min(
+                            legend.neededHeight,
+                            viewPortHandler.getChartHeight() *
+                                legend.maxSizePercent) +
+                        legend.yOffset,
+                  );
                   break;
 
                 default:
@@ -448,26 +452,28 @@ abstract class BarLineChartBasePainter<
           switch (legend.verticalAlignment) {
             case LegendVerticalAlignment.TOP:
               offsets = Rect.fromLTRB(
-                  0.0,
-                  min(
-                          legend.neededHeight,
-                          viewPortHandler.getChartHeight() *
-                              legend.maxSizePercent) +
-                      legend.yOffset,
-                  0.0,
-                  0.0);
+                0.0,
+                min(
+                        legend.neededHeight,
+                        viewPortHandler.getChartHeight() *
+                            legend.maxSizePercent) +
+                    legend.yOffset,
+                0.0,
+                0.0,
+              );
               break;
 
             case LegendVerticalAlignment.BOTTOM:
               offsets = Rect.fromLTRB(
-                  0.0,
-                  0.0,
-                  0.0,
-                  min(
-                          legend.neededHeight,
-                          viewPortHandler.getChartHeight() *
-                              legend.maxSizePercent) +
-                      legend.yOffset);
+                0.0,
+                0.0,
+                0.0,
+                min(
+                        legend.neededHeight,
+                        viewPortHandler.getChartHeight() *
+                            legend.maxSizePercent) +
+                    legend.yOffset,
+              );
               break;
 
             default:
@@ -662,7 +668,7 @@ abstract class BarLineChartBasePainter<
       return _axisRight.axisRange;
   }
 
-  List<double> mGetPositionBuffer = List(2);
+  List<double> mGetPositionBuffer = List.filled(2, 0);
 
   /// Returns a recyclable MPPointF instance.
   /// Returns the position (in pixels) the provided Entry has inside the chart
@@ -670,7 +676,7 @@ abstract class BarLineChartBasePainter<
   ///
   /// @param e
   /// @return
-  MPPointF getPosition(Entry e, AxisDependency axis) {
+  MPPointF? getPosition(Entry e, AxisDependency axis) {
     if (e == null) return null;
 
     mGetPositionBuffer[0] = e.x;
@@ -739,8 +745,8 @@ abstract class BarLineChartBasePainter<
   /// @param x
   /// @param y
   /// @return
-  Entry getEntryByTouchPoint(double x, double y) {
-    Highlight h = getHighlightByTouchPoint(x, y);
+  Entry? getEntryByTouchPoint(double x, double y) {
+    Highlight? h = getHighlightByTouchPoint(x, y);
     if (h != null) {
       return getData().getEntryForHighlight(h);
     }
@@ -752,11 +758,14 @@ abstract class BarLineChartBasePainter<
   /// @param x
   /// @param y
   /// @return
-  IBarLineScatterCandleBubbleDataSet getDataSetByTouchPoint(
-      double x, double y) {
-    Highlight h = getHighlightByTouchPoint(x, y);
+  IBarLineScatterCandleBubbleDataSet? getDataSetByTouchPoint(
+    double x,
+    double y,
+  ) {
+    Highlight? h = getHighlightByTouchPoint(x, y);
     if (h != null) {
-      return getData().getDataSetByIndex(h.dataSetIndex);
+      var d = getData().getDataSetByIndex(h.dataSetIndex);
+      return d == null ? null : d; //  as IBarLineScatterCandleBubbleDataSet;
     }
     return null;
   }
@@ -882,7 +891,7 @@ abstract class BarLineChartBasePainter<
 
   @override
   BarLineScatterCandleBubbleData getData() {
-    return super.getData();
+    return super.getData() as BarLineScatterCandleBubbleData;
   }
 
   /// Returns true if either the left or the right or both axes are inverted.
@@ -894,25 +903,25 @@ abstract class BarLineChartBasePainter<
     return false;
   }
 
-  bool updateEntry(int index, Entry entry, int dataSetIndex){
+  bool updateEntry(int index, Entry entry, int dataSetIndex) {
     var dataSet = getData().getDataSetByIndex(dataSetIndex);
-    if(dataSet == null) {
+    if (dataSet == null) {
       return false;
     }
 
     return dataSet.updateEntryByIndex(index, entry);
   }
 
-  void addEntryByIndex(int index, Entry entry, int dataSetIndex){
+  void addEntryByIndex(int index, Entry entry, int dataSetIndex) {
     var dataSet = getData().getDataSetByIndex(dataSetIndex);
-    if(dataSet != null){
+    if (dataSet != null) {
       dataSet.addEntryByIndex(index, entry);
     }
   }
 
-  void addEntry(Entry entry, int dataSetIndex){
+  void addEntry(Entry entry, int dataSetIndex) {
     var dataSet = getData().getDataSetByIndex(dataSetIndex);
-    if(dataSet != null) {
+    if (dataSet != null) {
       addEntryByIndex(dataSet.getEntryCount(), entry, dataSetIndex);
     }
   }

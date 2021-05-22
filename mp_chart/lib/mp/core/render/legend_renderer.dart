@@ -21,20 +21,24 @@ import 'package:mp_chart/mp/core/view_port.dart';
 
 class LegendRenderer extends Renderer {
   /// paint for the legend labels
-  TextPainter _legendLabelPaint;
+  late TextPainter _legendLabelPaint;
 
   /// paint used for the legend forms
-  Paint _legendFormPaint;
+  late Paint _legendFormPaint;
 
   /// the legend object this renderer renders
   Legend _legend;
 
-  LegendRenderer(ViewPortHandler viewPortHandler, Legend legend)
+  LegendRenderer(ViewPortHandler viewPortHandler, this._legend)
       : super(viewPortHandler) {
-    this._legend = legend;
+    // this._legend = legend;
 
     _legendLabelPaint = PainterUtils.create(
-        _legendLabelPaint, null, ColorUtils.BLACK, Utils.convertDpToPixel(9));
+      _legendLabelPaint,
+      null,
+      ColorUtils.BLACK,
+      Utils.convertDpToPixel(9),
+    );
 
     _legendFormPaint = Paint()
       ..isAntiAlias = true
@@ -59,18 +63,20 @@ class LegendRenderer extends Renderer {
     _legendLabelPaint = value;
   }
 
-  List<LegendEntry> _computedEntries = List(16);
+  List<LegendEntry> _computedEntries = [];
 
   /// Prepares the legend and calculates all needed forms, labels and colors.
   ///
   /// @param data
   void computeLegend(ChartData<IDataSet> data) {
     if (!_legend.isLegendCustom) {
-      _computedEntries = List();
+      _computedEntries = [];
 
       // loop for building up the colors and labels used in the legend
       for (int i = 0; i < data.getDataSetCount(); i++) {
-        IDataSet dataSet = data.getDataSetByIndex(i);
+        IDataSet? dataSet = data.getDataSetByIndex(i);
+
+        if (dataSet == null) continue;
 
         List<Color> clrs = dataSet.getColors();
         int entryCount = dataSet.getEntryCount();
@@ -128,7 +134,7 @@ class LegendRenderer extends Renderer {
           Color increasingColor = dataSet.getIncreasingColor();
 
           _computedEntries.add(LegendEntry(
-              null,
+              '',
               dataSet.getForm(),
               dataSet.getFormSize(),
               dataSet.getFormLineWidth(),
@@ -146,23 +152,26 @@ class LegendRenderer extends Renderer {
           // all others
 
           for (int j = 0; j < clrs.length && j < entryCount; j++) {
-            String label;
+            String? label;
 
             // if multiple colors are set for a DataSet, group them
             if (j < clrs.length - 1 && j < entryCount - 1) {
               label = null;
             } else {
               // add label to the last entry
-              label = data.getDataSetByIndex(i).getLabel();
+              label = data.getDataSetByIndex(i)?.getLabel();
             }
 
-            _computedEntries.add(LegendEntry(
-                label,
+            _computedEntries.add(
+              LegendEntry(
+                label ?? '',
                 dataSet.getForm(),
                 dataSet.getFormSize(),
                 dataSet.getFormLineWidth(),
                 dataSet.getFormLineDashEffect(),
-                clrs[j]));
+                clrs[j],
+              ),
+            );
           }
         }
       }
@@ -181,10 +190,16 @@ class LegendRenderer extends Renderer {
   }
 
   TextPainter getLabelPainter() {
-    var fontFamily = _legend.typeface?.fontFamily;
-    var fontWeight = _legend.typeface?.fontWeight;
-    return PainterUtils.create(_legendLabelPaint, null, _legend.textColor, _legend.textSize,
-        fontFamily: fontFamily, fontWeight: fontWeight);
+    var fontFamily = _legend.typeface.fontFamily;
+    var fontWeight = _legend.typeface.fontWeight;
+    return PainterUtils.create(
+      _legendLabelPaint,
+      null,
+      _legend.textColor,
+      _legend.textSize,
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+    );
   }
 
   void renderLegend(Canvas c) {
@@ -482,13 +497,14 @@ class LegendRenderer extends Renderer {
       case LegendForm.LINE:
         {
           final double formLineWidth = Utils.convertDpToPixel(
-              entry.formLineWidth.isNaN
-                  ? legend.formLineWidth
-                  : entry.formLineWidth);
-          final DashPathEffect formLineDashEffect =
-              entry.formLineDashEffect == null
-                  ? legend.getFormLineDashEffect()
-                  : entry.formLineDashEffect;
+            entry.formLineWidth.isNaN
+                ? legend.formLineWidth
+                : entry.formLineWidth,
+          );
+          var isNotSet = entry.formLineDashEffect == null;
+          final DashPathEffect formLineDashEffect = isNotSet
+              ? legend.getFormLineDashEffect()
+              : entry.formLineDashEffect!;
           _legendFormPaint = Paint()
             ..isAntiAlias = true
             ..color = entry.formColor
@@ -497,9 +513,9 @@ class LegendRenderer extends Renderer {
           _lineFormPath.reset();
           _lineFormPath.moveTo(x, y);
           _lineFormPath.lineTo(x + formSize, y);
-          if (formLineDashEffect != null) {
-            _lineFormPath = formLineDashEffect.convert2DashPath(_lineFormPath);
-          }
+          // if (formLineDashEffect != null) {
+          _lineFormPath = formLineDashEffect.convert2DashPath(_lineFormPath);
+          // }
           c.drawPath(_lineFormPath, _legendFormPaint);
         }
         break;
@@ -509,7 +525,7 @@ class LegendRenderer extends Renderer {
 
   void drawLabel(Canvas c, double x, double y, String label) {
     _legendLabelPaint.text =
-        TextSpan(text: label, style: _legendLabelPaint.text.style);
+        TextSpan(text: label, style: _legendLabelPaint.text?.style);
     _legendLabelPaint.layout();
     _legendLabelPaint.paint(c, Offset(x, y - _legendLabelPaint.height));
   }

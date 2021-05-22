@@ -27,18 +27,18 @@ class MPPointF extends Poolable {
   }
 
   static MPPointF getInstance1(double x, double y) {
-    MPPointF result = pool.get();
+    MPPointF result = pool.get() as MPPointF;
     result._x = x;
     result._y = y;
     return result;
   }
 
   static MPPointF getInstance2() {
-    return pool.get();
+    return pool.get() as MPPointF;
   }
 
   static MPPointF getInstance3(MPPointF copy) {
-    MPPointF result = pool.get();
+    MPPointF result = pool.get() as MPPointF;
     result._x = copy._x;
     result._y = copy._y;
     return result;
@@ -65,7 +65,7 @@ class MPPointD extends Poolable {
     ..setReplenishPercentage(0.5);
 
   static MPPointD getInstance1(double x, double y) {
-    MPPointD result = pool.get();
+    MPPointD result = pool.get() as MPPointD;
     result.x = x;
     result.y = y;
     return result;
@@ -107,12 +107,12 @@ abstract class Poolable {
 class ObjectPool<T extends Poolable> {
   static int ids = 0;
 
-  int poolId;
-  int desiredCapacity;
-  List<Object> objects;
-  int objectsPointer;
-  T modelObject;
-  double replenishPercentage;
+  int poolId = 0;
+  int desiredCapacity = 0;
+  List<Object> objects = [];
+  int objectsPointer = 0;
+  late T modelObject;
+  double replenishPercentage = 0;
 
   /// Returns the id of the given pool instance.
   ///
@@ -137,10 +137,12 @@ class ObjectPool<T extends Poolable> {
   ObjectPool(int withCapacity, T object) {
     if (withCapacity <= 0) {
       throw new Exception(
-          "Object Pool must be instantiated with a capacity greater than 0!");
+        "Object Pool must be instantiated with a capacity greater than 0!",
+      );
     }
+    var duplicableObj = Object();
     this.desiredCapacity = withCapacity;
-    this.objects = List(this.desiredCapacity);
+    this.objects = List.filled(this.desiredCapacity, duplicableObj);
     this.objectsPointer = 0;
     this.modelObject = object;
     this.replenishPercentage = 1.0;
@@ -194,7 +196,7 @@ class ObjectPool<T extends Poolable> {
       this.refillPool1();
     }
 
-    T result = objects[this.objectsPointer];
+    T result = objects[this.objectsPointer] as T;
     result.currentOwnerId = Poolable.NO_OWNER;
     this.objectsPointer--;
 
@@ -256,7 +258,7 @@ class ObjectPool<T extends Poolable> {
   void resizePool() {
     final int oldCapacity = this.desiredCapacity;
     this.desiredCapacity *= 2;
-    List<Object> temp = List(this.desiredCapacity);
+    List<Object> temp = List.filled(this.desiredCapacity, Object());
     for (int i = 0; i < oldCapacity; i++) {
       temp[i] = this.objects[i];
     }

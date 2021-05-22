@@ -154,7 +154,7 @@ class CombinedChartPainter extends BarLineChartBasePainter<CombinedData>
             chartTransListener);
 
   List<DrawOrder> initDrawOrder() {
-    return List()
+    return []
       ..add(DrawOrder.BAR)
       ..add(DrawOrder.BUBBLE)
       ..add(DrawOrder.LINE)
@@ -174,7 +174,7 @@ class CombinedChartPainter extends BarLineChartBasePainter<CombinedData>
 
   @override
   CombinedData getCombinedData() {
-    return getData();
+    return getData() as CombinedData;
   }
 
   /// Returns the Highlight object (contains x-index and DataSet index) of the selected value at the given touch
@@ -185,11 +185,11 @@ class CombinedChartPainter extends BarLineChartBasePainter<CombinedData>
   /// @param y
   /// @return
   @override
-  Highlight getHighlightByTouchPoint(double x, double y) {
+  Highlight? getHighlightByTouchPoint(double x, double y) {
     if (getCombinedData() == null) {
       return null;
     } else {
-      Highlight h = highlighter.getHighlight(x, y);
+      Highlight? h = highlighter.getHighlight(x, y);
       if (h == null || !isHighlightFullBarEnabled()) return h;
 
       // For isHighlightFullBarEnabled, remove stackIndex
@@ -206,31 +206,31 @@ class CombinedChartPainter extends BarLineChartBasePainter<CombinedData>
   }
 
   @override
-  LineData getLineData() {
+  LineData? getLineData() {
     if (getCombinedData() == null) return null;
     return getCombinedData().getLineData();
   }
 
   @override
-  BarData getBarData() {
+  BarData? getBarData() {
     if (getCombinedData() == null) return null;
     return getCombinedData().getBarData();
   }
 
   @override
-  ScatterData getScatterData() {
+  ScatterData? getScatterData() {
     if (getCombinedData() == null) return null;
     return getCombinedData().getScatterData();
   }
 
   @override
-  CandleData getCandleData() {
+  CandleData? getCandleData() {
     if (getCombinedData() == null) return null;
     return getCombinedData().getCandleData();
   }
 
   @override
-  BubbleData getBubbleData() {
+  BubbleData? getBubbleData() {
     if (getCombinedData() == null) return null;
     return getCombinedData().getBubbleData();
   }
@@ -301,10 +301,10 @@ class CombinedChartPainter extends BarLineChartBasePainter<CombinedData>
     for (int i = 0; i < indicesToHighlight.length; i++) {
       Highlight highlight = indicesToHighlight[i];
 
-      IDataSet set = getCombinedData().getDataSetByHighlight(highlight);
+      IDataSet? set = getCombinedData().getDataSetByHighlight(highlight);
 
-      Entry e = getCombinedData().getEntryForHighlight(highlight);
-      if (e == null) continue;
+      Entry? e = getCombinedData().getEntryForHighlight(highlight);
+      if (set == null || e == null) continue;
 
       int entryIndex = set.getEntryIndex2(e);
 

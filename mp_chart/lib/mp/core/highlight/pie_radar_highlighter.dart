@@ -8,10 +8,10 @@ abstract class PieRadarHighlighter<T extends PieRadarChartPainter>
   T _painter;
 
   /// buffer for storing previously highlighted values
-  List<Highlight> _highlightBuffer = List();
+  List<Highlight> _highlightBuffer = [];
 
-  PieRadarHighlighter(T painter) {
-    this._painter = painter;
+  PieRadarHighlighter(this._painter) {
+    // this._painter = painter;
   }
 
   List<Highlight> get highlightBuffer => _highlightBuffer;
@@ -19,7 +19,7 @@ abstract class PieRadarHighlighter<T extends PieRadarChartPainter>
   T get painter => _painter;
 
   @override
-  Highlight getHighlight(double x, double y) {
+  Highlight? getHighlight(double x, double y) {
     double touchDistanceToCenter = _painter.distanceToCenter(x, y);
 
     // check if a slice was touched
@@ -36,8 +36,11 @@ abstract class PieRadarHighlighter<T extends PieRadarChartPainter>
       int index = _painter.getIndexForAngle(angle);
 
       // check if the index could be found
+      // TODO:  99999 is a hack ... need to review this code
       if (index < 0 ||
-          index >= _painter.getData().getMaxEntryCountSet().getEntryCount()) {
+          index >=
+              (_painter.getData().getMaxEntryCountSet()?.getEntryCount() ??
+                  99999)) {
         return null;
       } else {
         return getClosestHighlight(index, x, y);
@@ -51,5 +54,5 @@ abstract class PieRadarHighlighter<T extends PieRadarChartPainter>
   /// @param x
   /// @param y
   /// @return
-  Highlight getClosestHighlight(int index, double x, double y);
+  Highlight? getClosestHighlight(int index, double x, double y);
 }

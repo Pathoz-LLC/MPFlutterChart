@@ -30,18 +30,19 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
 
   @override
   void initBuffers() {
-    BarData barData = provider.getBarData();
+    BarData? barData = provider.getBarData();
     // barBuffers = List(barData.getDataSetCount());
     var dfltBb = BarBuffer(0, 0, false);
-    barBuffers = List<BarBuffer>.filled(barData.getDataSetCount(), dfltBb);
+    barBuffers =
+        List<BarBuffer>.filled(barData?.getDataSetCount() ?? 0, dfltBb);
 
     for (int i = 0; i < barBuffers.length; i++) {
-      IBarDataSet? set = barData.getDataSetByIndex(i);
+      IBarDataSet? set = barData?.getDataSetByIndex(i);
       if (set == null) continue;
 
       barBuffers[i] = HorizontalBarBuffer(
           set.getEntryCount() * 4 * (set.isStacked() ? set.getStackSize() : 1),
-          barData.getDataSetCount(),
+          barData?.getDataSetCount() ?? 0,
           set.isStacked());
     }
   }
@@ -65,9 +66,9 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
     if (provider.isDrawBarShadowEnabled()) {
       shadowPaint..color = dataSet.getBarShadowColor();
 
-      BarData barData = provider.getBarData();
+      BarData? barData = provider.getBarData();
 
-      final double barWidth = barData.barWidth;
+      final double barWidth = barData?.barWidth ?? 10;
       final double barWidthHalf = barWidth / 2.0;
       double x;
 
@@ -107,7 +108,7 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
     buffer.setPhases(phaseX, phaseY);
     buffer.dataSetIndex = (index);
     buffer.inverted = (provider.isInverted(dataSet.getAxisDependency()));
-    buffer.barWidth = (provider.getBarData().barWidth);
+    buffer.barWidth = (provider.getBarData()?.barWidth) ?? 10;
 
     buffer.feed(dataSet);
 
@@ -120,9 +121,13 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
     }
 
     for (int j = 0; j < buffer.size(); j += 4) {
-      if (!viewPortHandler.isInBoundsTop(buffer.buffer[j + 3])) break;
+      if (!viewPortHandler.isInBoundsTop(
+        buffer.buffer[j + 3],
+      )) break;
 
-      if (!viewPortHandler.isInBoundsBottom(buffer.buffer[j + 1])) continue;
+      if (!viewPortHandler.isInBoundsBottom(
+        buffer.buffer[j + 1],
+      )) continue;
 
       if (!isSingleColor) {
         // Set the color for the currently drawn value. If the index
@@ -149,14 +154,14 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
     // if values are drawn
     if (!isDrawingValuesAllowed(provider)) return;
 
-    List<IBarDataSet> dataSets = provider.getBarData().dataSets;
+    List<IBarDataSet> dataSets = provider.getBarData()?.dataSets ?? [];
 
     final double valueOffsetPlus = Utils.convertDpToPixel(5);
     double posOffset = 0;
     double negOffset = 0;
     final bool drawValueAboveBar = provider.isDrawValueAboveBarEnabled();
 
-    for (int i = 0; i < provider.getBarData().getDataSetCount(); i++) {
+    for (int i = 0; i < (provider.getBarData()?.getDataSetCount() ?? 0); i++) {
       IBarDataSet dataSet = dataSets[i];
 
       if (!shouldDrawValues(dataSet)) continue;
@@ -417,7 +422,7 @@ class HorizontalBarChartRenderer extends BarChartRenderer {
 
   @override
   bool isDrawingValuesAllowed(ChartInterface chart) {
-    return chart.getData().getEntryCount() <
+    return (chart.getData()?.getEntryCount() ?? 0) <
         chart.getMaxVisibleCount() * viewPortHandler.getScaleY();
   }
 }

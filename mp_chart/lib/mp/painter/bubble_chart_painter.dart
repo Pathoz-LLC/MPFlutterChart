@@ -127,6 +127,6 @@ class BubbleChartPainter extends BarLineChartBasePainter<BubbleData>
 
   @override
   BubbleData getBubbleData() {
-    return getData();
+    return getData() as BubbleData;
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:mp_chart/mp/core/adapter_android_mp.dart';
 import 'package:mp_chart/mp/core/animator.dart';
 import 'package:mp_chart/mp/core/data/pie_data.dart';
+import 'package:mp_chart/mp/core/data_interfaces/i_data_set.dart';
 import 'package:mp_chart/mp/core/data_interfaces/i_pie_data_set.dart';
 import 'package:mp_chart/mp/core/entry/entry.dart';
 import 'package:mp_chart/mp/core/entry/pie_entry.dart';
@@ -25,27 +26,24 @@ class PieChartRenderer extends DataRenderer {
 
   /// paint for the hole in the center of the pie chart and the transparent
   /// circle
-  Paint _holePaint;
-  Paint _transparentCirclePaint;
-  Paint _valueLinePaint;
+  late Paint _holePaint;
+  late Paint _transparentCirclePaint;
+  late Paint _valueLinePaint;
 
   /// paint object for the text that can be displayed in the center of the
   /// chart
-  TextPainter _centerTextPaint;
+  late TextPainter _centerTextPaint;
 
   /// paint object used for drwing the slice-text
-  TextPainter _entryLabelsPaint;
+  late TextPainter _entryLabelsPaint;
 
 //   StaticLayout _centerTextLayout;
   // ignore: unused_field
-  String _centerTextLastValue;
+  String _centerTextLastValue = '';
 
   // ignore: unused_field
   Rect _centerTextLastBounds = Rect.zero;
-  List<Rect> _rectBuffer = List()
-    ..add(Rect.zero)
-    ..add(Rect.zero)
-    ..add(Rect.zero);
+  List<Rect> _rectBuffer = []..add(Rect.zero)..add(Rect.zero)..add(Rect.zero);
 
   /// Bitmap for drawing the center hole
 //   WeakReference<Bitmap> mDrawBitmap;
@@ -53,10 +51,13 @@ class PieChartRenderer extends DataRenderer {
 //   Canvas mBitmapCanvas;
 
   PieChartRenderer(
-      PieChartPainter chart, Animator animator, ViewPortHandler viewPortHandler,
-      {TypeFace centerTextTypeface, TypeFace entryLabelTypeface})
-      : super(animator, viewPortHandler) {
-    _painter = chart;
+    this._painter,
+    Animator animator,
+    ViewPortHandler viewPortHandler, {
+    TypeFace? centerTextTypeface,
+    TypeFace? entryLabelTypeface,
+  }) : super(animator, viewPortHandler) {
+    // _painter = chart;
 
     _holePaint = Paint()
       ..isAntiAlias = true
@@ -71,16 +72,16 @@ class PieChartRenderer extends DataRenderer {
 
     _centerTextPaint = PainterUtils.create(
         null, null, ColorUtils.BLACK, Utils.convertDpToPixel(12),
-        fontFamily: centerTextTypeface?.fontFamily,
-        fontWeight: centerTextTypeface?.fontWeight);
+        fontFamily: centerTextTypeface?.fontFamily ?? 'courier',
+        fontWeight: centerTextTypeface?.fontWeight ?? FontWeight.w400);
 
     valuePaint = PainterUtils.create(
         null, null, ColorUtils.WHITE, Utils.convertDpToPixel(9));
 
     _entryLabelsPaint = PainterUtils.create(
         null, null, ColorUtils.WHITE, Utils.convertDpToPixel(10),
-        fontWeight: entryLabelTypeface?.fontWeight,
-        fontFamily: entryLabelTypeface?.fontFamily);
+        fontFamily: entryLabelTypeface?.fontFamily ?? 'courier',
+        fontWeight: entryLabelTypeface?.fontWeight ?? FontWeight.w400);
 
     _valueLinePaint = Paint()
       ..isAntiAlias = true
@@ -127,8 +128,8 @@ class PieChartRenderer extends DataRenderer {
 //
 //    drawBitmap.eraseColor(Color.TRANSPARENT);
 
-    PieData pieData = _painter.getData();
-
+    // added cast below ... not sure it's safe??
+    PieData? pieData = _painter.getData() as PieData;
     for (IPieDataSet set in pieData.dataSets) {
       if (set.isVisible() && set.getEntryCount() > 0) drawDataSet(c, set);
     }
@@ -443,7 +444,7 @@ class PieChartRenderer extends DataRenderer {
 
     final double labelRadius = radius - labelRadiusOffset;
 
-    PieData data = _painter.getData();
+    PieData? data = _painter.getData() as PieData;
     List<IPieDataSet> dataSets = data.dataSets;
 
     double yValueSum = data.getYValueSum();
@@ -679,8 +680,14 @@ class PieChartRenderer extends DataRenderer {
 
   void drawValueByHeight(Canvas c, String valueText, double x, double y,
       Color color, bool useHeight, double textSize, TypeFace typeFace) {
-    valuePaint = PainterUtils.create(valuePaint, valueText, color, textSize,
-        fontFamily: typeFace?.fontFamily, fontWeight: typeFace?.fontWeight);
+    valuePaint = PainterUtils.create(
+      valuePaint,
+      valueText,
+      color,
+      textSize,
+      fontFamily: typeFace.fontFamily,
+      fontWeight: typeFace.fontWeight,
+    );
     valuePaint.layout();
     valuePaint.paint(
         c,
@@ -692,7 +699,7 @@ class PieChartRenderer extends DataRenderer {
   void drawValue(Canvas c, String valueText, double x, double y, Color color,
       double textSize, TypeFace typeFace) {
     valuePaint = PainterUtils.create(valuePaint, valueText, color, textSize,
-        fontFamily: typeFace?.fontFamily, fontWeight: typeFace?.fontWeight);
+        fontFamily: typeFace.fontFamily, fontWeight: typeFace.fontWeight);
     valuePaint.layout();
     valuePaint.paint(
         c, Offset(x - valuePaint.width / 2, y - valuePaint.height));
@@ -705,7 +712,7 @@ class PieChartRenderer extends DataRenderer {
   /// @param x
   /// @param y
   void drawEntryLabel(Canvas c, String label, double x, double y,
-      {double labelTextSize, Color labelColor}) {
+      {double? labelTextSize, Color? labelColor}) {
     _entryLabelsPaint = PainterUtils.create(
         _entryLabelsPaint,
         label,
@@ -881,8 +888,9 @@ class PieChartRenderer extends DataRenderer {
 
       if (index >= drawAngles.length) continue;
 
-      IPieDataSet set =
-          _painter.getData().getDataSetByIndex(indices[i].dataSetIndex);
+      IPieDataSet? set = _painter
+          .getData()
+          .getDataSetByIndex(indices[i].dataSetIndex) as IPieDataSet;
 
       if (set == null || !set.isHighlightEnabled()) continue;
 
@@ -1128,8 +1136,10 @@ class PieChartRenderer extends DataRenderer {
   /// @param color
   void setTransparentCircleColor(Color color) {
     Paint p = transparentCirclePaint;
-    p.color = Color.fromARGB(p.color?.alpha == null ? 255 : p.color?.alpha,
-        color.red, color.green, color.blue);
+    p.color = Color.fromARGB(
+      p.color.alpha, //  == null ? 255 : p.color?.alpha
+      color.red, color.green, color.blue,
+    );
   }
 
   /// Sets the amount of transparency the transparent circle should have 0 = fully transparent,
@@ -1154,11 +1164,11 @@ class PieChartRenderer extends DataRenderer {
   ///
   /// @param size
   void setEntryLabelTextSize(double size) {
-    var style = entryLabelsPaint.text.style;
+    var style = entryLabelsPaint.text?.style;
     entryLabelsPaint = PainterUtils.create(
         entryLabelsPaint,
         null,
-        style?.color == null ? ColorUtils.WHITE : style?.color,
+        style?.color == null ? ColorUtils.WHITE : style!.color!,
         Utils.convertDpToPixel(size));
   }
 }

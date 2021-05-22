@@ -14,9 +14,9 @@ class YAxisRendererRadarChart extends YAxisRenderer {
   RadarChartPainter _painter;
 
   YAxisRendererRadarChart(
-      ViewPortHandler viewPortHandler, YAxis yAxis, RadarChartPainter chart)
+      ViewPortHandler viewPortHandler, YAxis yAxis, this._painter)
       : super(viewPortHandler, yAxis, null) {
-    this._painter = chart;
+    // this._painter = chart;
   }
 
   RadarChartPainter get painter => _painter;
@@ -30,8 +30,8 @@ class YAxisRendererRadarChart extends YAxisRenderer {
     double range = (yMax - yMin).abs();
 
     if (labelCount == 0 || range <= 0 || range.isInfinite) {
-      axis.entries = List();
-      axis.centeredEntries = List();
+      axis.entries = [];
+      axis.centeredEntries = [];
       axis.entryCount = 0;
       return;
     }
@@ -46,8 +46,8 @@ class YAxisRendererRadarChart extends YAxisRenderer {
       interval = interval < axis.granularity ? axis.granularity : interval;
 
     // Normalize interval
-    double intervalMagnitude =
-        Utils.roundToNextSignificant(pow(10.0, log(interval) / ln10));
+    double intervalMagnitude = Utils.roundToNextSignificant(
+        (pow(10.0, log(interval) / ln10)) as double);
     int intervalSigDigit = (interval ~/ intervalMagnitude);
     if (intervalSigDigit > 5) {
       // Use one order of magnitude higher, to avoid intervals like 0.9 or
@@ -65,7 +65,7 @@ class YAxisRendererRadarChart extends YAxisRenderer {
 
       if (axis.entries.length < labelCount) {
         // Ensure stops contains at least numStops elements.
-        axis.entries = List(labelCount);
+        axis.entries = List.filled(labelCount, 0);
       }
 
       double v = min;
@@ -104,7 +104,7 @@ class YAxisRendererRadarChart extends YAxisRenderer {
 
       if (axis.entries.length < n) {
         // Ensure stops contains at least numStops elements.
-        axis.entries = List(n);
+        axis.entries = List.filled(n, 0);
       }
 
       f = first;
@@ -126,7 +126,7 @@ class YAxisRendererRadarChart extends YAxisRenderer {
 
     if (centeringEnabled) {
       if (axis.centeredEntries.length < n) {
-        axis.centeredEntries = List(n);
+        axis.centeredEntries = List.filled(n, 0);
       }
 
       double offset = (axis.entries[1] - axis.entries[0]) / 2;
@@ -162,9 +162,13 @@ class YAxisRendererRadarChart extends YAxisRenderer {
 
       String label = yAxis.getFormattedLabel(j);
       axisLabelPaint = PainterUtils.create(
-          axisLabelPaint, label, yAxis.textColor, yAxis.textSize,
-          fontWeight: yAxis.typeface?.fontWeight,
-          fontFamily: yAxis.typeface?.fontFamily);
+        axisLabelPaint,
+        label,
+        yAxis.textColor,
+        yAxis.textSize,
+        fontWeight: yAxis.typeface.fontWeight,
+        fontFamily: yAxis.typeface.fontFamily,
+      );
       axisLabelPaint.layout();
       axisLabelPaint.paint(
           c,
@@ -207,8 +211,8 @@ class YAxisRendererRadarChart extends YAxisRenderer {
       limitPath.reset();
 
       for (int j = 0;
-          j < _painter.getData().getMaxEntryCountSet().getEntryCount();
-          j++) {
+          j < (_painter.getData().getMaxEntryCountSet()?.getEntryCount() ?? 0);
+          j++,) {
         Utils.getPosition(
             center, r, sliceangle * j + _painter.getRotationAngle(), pOut);
 

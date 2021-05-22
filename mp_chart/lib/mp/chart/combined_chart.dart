@@ -79,7 +79,7 @@ class CombinedChartState extends ChartState<CombinedChart> {
   @override
   void onSingleTapUp(TapUpDetails details) {
     if (widget.controller.painter.highlightPerDragEnabled) {
-      Highlight h = widget.controller.painter.getHighlightByTouchPoint(
+      Highlight? h = widget.controller.painter.getHighlightByTouchPoint(
           details.localPosition.dx, details.localPosition.dy);
 
       if (lastHighlighted != null) {
@@ -153,7 +153,7 @@ class CombinedChartState extends ChartState<CombinedChart> {
       final highlighted = widget.controller.painter.getHighlightByTouchPoint(
           details.localPoint.dx, details.localPoint.dy);
       if (lastHighlighted != null &&
-          highlighted.equalTo(lastHighlighted!) == false) {
+          highlighted!.equalTo(lastHighlighted!) == false) {
         lastHighlighted = HighlightUtils.performHighlight(
             widget.controller.painter, highlighted, lastHighlighted!);
         needStateIfNotDispose = true;

@@ -129,6 +129,6 @@ class CandlestickChartPainter extends BarLineChartBasePainter<CandleData>
 
   @override
   CandleData getCandleData() {
-    return getData();
+    return getData() as CandleData;
   }
 }

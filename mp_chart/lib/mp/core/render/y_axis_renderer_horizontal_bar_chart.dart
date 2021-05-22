@@ -16,8 +16,10 @@ import 'package:mp_chart/mp/core/utils/utils.dart';
 
 class YAxisRendererHorizontalBarChart extends YAxisRenderer {
   YAxisRendererHorizontalBarChart(
-      ViewPortHandler viewPortHandler, YAxis yAxis, Transformer trans)
-      : super(viewPortHandler, yAxis, trans);
+    ViewPortHandler viewPortHandler,
+    YAxis yAxis,
+    Transformer trans,
+  ) : super(viewPortHandler, yAxis, trans);
 
   /// Computes the axis values.
   ///
@@ -57,9 +59,13 @@ class YAxisRendererHorizontalBarChart extends YAxisRenderer {
     List<double> positions = getTransformedPositions();
 
     axisLabelPaint = PainterUtils.create(
-        axisLabelPaint, null, yAxis.textColor, yAxis.textSize,
-        fontFamily: yAxis.typeface?.fontFamily,
-        fontWeight: yAxis.typeface?.fontWeight);
+      axisLabelPaint,
+      null,
+      yAxis.textColor,
+      yAxis.textSize,
+      fontFamily: yAxis.typeface.fontFamily,
+      fontWeight: yAxis.typeface.fontWeight,
+    );
 
 //    double baseYOffset = Utils.convertDpToPixel(2.5);
 //    double textHeight = Utils.calcTextHeight(axisLabelPaint, "Q").toDouble();
@@ -118,8 +124,8 @@ class YAxisRendererHorizontalBarChart extends YAxisRenderer {
       AxisDependency axisDependency, YAxisLabelPosition position) {
     axisLabelPaint = PainterUtils.create(
         axisLabelPaint, null, yAxis.textColor, yAxis.textSize,
-        fontWeight: yAxis.typeface?.fontWeight,
-        fontFamily: yAxis.typeface?.fontFamily);
+        fontWeight: yAxis.typeface.fontWeight,
+        fontFamily: yAxis.typeface.fontFamily);
 
     final int from = yAxis.drawBottomYLabelEntry ? 0 : 1;
     final int to =
@@ -127,8 +133,10 @@ class YAxisRendererHorizontalBarChart extends YAxisRenderer {
 
     for (int i = from; i < to; i++) {
       String text = yAxis.getFormattedLabel(i);
-      axisLabelPaint.text =
-          TextSpan(text: text, style: axisLabelPaint.text.style);
+      axisLabelPaint.text = TextSpan(
+        text: text,
+        style: axisLabelPaint.text?.style,
+      );
       axisLabelPaint.layout();
 
       if (axisDependency == AxisDependency.LEFT) {
@@ -162,7 +170,7 @@ class YAxisRendererHorizontalBarChart extends YAxisRenderer {
   @override
   List<double> getTransformedPositions() {
     if (mGetTransformedPositionsBuffer.length != yAxis.entryCount * 2) {
-      mGetTransformedPositionsBuffer = List(yAxis.entryCount * 2);
+      mGetTransformedPositionsBuffer = List.filled(yAxis.entryCount * 2, 0);
     }
     List<double> positions = mGetTransformedPositionsBuffer;
 
@@ -224,7 +232,7 @@ class YAxisRendererHorizontalBarChart extends YAxisRenderer {
   }
 
   Path mRenderLimitLinesPathBuffer = Path();
-  List<double> mRenderLimitLinesBuffer = List(4);
+  List<double> mRenderLimitLinesBuffer = List.filled(4, 0);
 
   /// Draws the LimitLines associated with this axis to the screen.
   /// This is the standard XAxis renderer using the YAxis limit lines.

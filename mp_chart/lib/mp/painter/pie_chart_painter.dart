@@ -66,10 +66,10 @@ class PieChartPainter extends PieRadarChartPainter<PieData> {
   Rect _circleBox = Rect.zero;
 
   /// array that holds the width of each pie-slice in degrees
-  List<double> _drawAngles = List(1);
+  List<double> _drawAngles = List.filled(1, 0);
 
   /// array that holds the absolute angle in degrees of each slice
-  List<double> _absoluteAngles = List(1);
+  List<double> _absoluteAngles = List.filled(1, 0);
 
   /// Hole color
   Color _holeColor;
@@ -256,7 +256,7 @@ class PieChartPainter extends PieRadarChartPainter<PieData> {
         center.y);
 
     MPPointF.recycleInstance(center);
-    return List()..add(x)..add(y);
+    return []..add(x)..add(y);
   }
 
   /// calculates the needed angles for the chart slices
@@ -264,14 +264,14 @@ class PieChartPainter extends PieRadarChartPainter<PieData> {
     int entryCount = getData().getEntryCount();
 
     if (_drawAngles.length != entryCount) {
-      _drawAngles = List(entryCount);
+      _drawAngles = List.filled(entryCount, 0);
     } else {
       for (int i = 0; i < entryCount; i++) {
         _drawAngles[i] = 0;
       }
     }
     if (_absoluteAngles.length != entryCount) {
-      _absoluteAngles = List(entryCount);
+      _absoluteAngles = List.filled(entryCount, 0);
     } else {
       for (int i = 0; i < entryCount; i++) {
         _absoluteAngles[i] = 0;
@@ -280,11 +280,11 @@ class PieChartPainter extends PieRadarChartPainter<PieData> {
 
     double yValueSum = (getData() as PieData).getYValueSum();
 
-    List<IPieDataSet> dataSets = getData().dataSets;
+    List<IPieDataSet> dataSets = getData().dataSets as List<IPieDataSet>;
 
     bool hasMinAngle =
         _minAngleForSlices != 0 && entryCount * _minAngleForSlices <= _maxAngle;
-    List<double> minAngles = List(entryCount);
+    List<double> minAngles = List.filled(entryCount, 0);
 
     int cnt = 0;
     double offset = 0;
@@ -385,7 +385,7 @@ class PieChartPainter extends PieRadarChartPainter<PieData> {
   /// @param xIndex
   /// @return
   int getDataSetIndexForIndex(int xIndex) {
-    List<IPieDataSet> dataSets = getData().dataSets;
+    List<IPieDataSet> dataSets = getData().dataSets as List<IPieDataSet>;
 
     for (int i = 0; i < dataSets.length; i++) {
       if (dataSets[i].getEntryForXValue2(xIndex.toDouble(), double.nan) != null)
@@ -445,7 +445,8 @@ class PieChartPainter extends PieRadarChartPainter<PieData> {
   @override
   double getRequiredLegendOffset() {
     // ignore: null_aware_before_operator
-    var offset = legendRenderer.legendLabelPaint.text?.style?.fontSize * 2.0;
+    var offset =
+        (legendRenderer.legendLabelPaint.text?.style?.fontSize ?? 0) * 2.0;
     return offset == null ? Utils.convertDpToPixel(9) : offset;
   }
 

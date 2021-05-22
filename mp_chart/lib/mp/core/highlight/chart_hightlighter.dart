@@ -16,10 +16,10 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   T _provider;
 
   /// buffer for storing previously highlighted values
-  List<Highlight> _highlightBuffer = List<Highlight>();
+  List<Highlight> _highlightBuffer = [];
 
-  ChartHighlighter(T provider) {
-    this._provider = provider;
+  ChartHighlighter(this._provider) {
+    // this._provider = provider;
   }
 
   T get provider => _provider;
@@ -27,11 +27,11 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   List<Highlight> get highlightBuffer => _highlightBuffer;
 
   @override
-  Highlight getHighlight(double x, double y) {
+  Highlight? getHighlight(double x, double y) {
     MPPointD pos = getValsForTouch(x, y);
     double xVal = pos.x;
     MPPointD.recycleInstance2(pos);
-    Highlight high = getHighlightForX(xVal, x, y);
+    Highlight? high = getHighlightForX(xVal, x, y);
     return high;
   }
 
@@ -55,7 +55,7 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   /// @param x
   /// @param y
   /// @return
-  Highlight getHighlightForX(double xVal, double x, double y) {
+  Highlight? getHighlightForX(double xVal, double x, double y) {
     List<Highlight> closestValues = getHighlightsAtXValue(xVal, x, y);
 
     if (closestValues.isEmpty) {
@@ -71,7 +71,7 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
         ? AxisDependency.LEFT
         : AxisDependency.RIGHT;
 
-    Highlight detail = getClosestHighlightByPixel(
+    Highlight? detail = getClosestHighlightByPixel(
         closestValues, x, y, axis, _provider.getMaxHighlightDistance());
 
     return detail;
@@ -116,17 +116,17 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   List<Highlight> getHighlightsAtXValue(double xVal, double x, double y) {
     _highlightBuffer.clear();
 
-    BarLineScatterCandleBubbleData data = getData();
+    BarLineScatterCandleBubbleData? data = getData();
 
     if (data == null) return _highlightBuffer;
 
     for (int i = 0, dataSetCount = data.getDataSetCount();
         i < dataSetCount;
         i++) {
-      IDataSet dataSet = data.getDataSetByIndex(i);
+      IDataSet? dataSet = data.getDataSetByIndex(i);
 
       // don't include DataSets that cannot be highlighted
-      if (!dataSet.isHighlightEnabled()) continue;
+      if (dataSet == null || !dataSet.isHighlightEnabled()) continue;
 
       _highlightBuffer
           .addAll(buildHighlights(dataSet, i, xVal, Rounding.CLOSEST));
@@ -144,13 +144,13 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   /// @return
   List<Highlight> buildHighlights(
       IDataSet set, int dataSetIndex, double xVal, Rounding rounding) {
-    List<Highlight> highlights = List();
+    List<Highlight> highlights = [];
 
     //noinspection unchecked
     List<Entry> entries = set.getEntriesForXValue(xVal);
     if (entries.length == 0) {
       // Try to find closest x-value and take all entries for that x-value
-      final Entry closest = set.getEntryForXValue1(xVal, double.nan, rounding);
+      final Entry? closest = set.getEntryForXValue1(xVal, double.nan, rounding);
       if (closest != null) {
         //noinspection unchecked
         entries = set.getEntriesForXValue(closest.x);
@@ -186,9 +186,14 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   /// @param axis                 the closest axis
   /// @param minSelectionDistance
   /// @return
-  Highlight getClosestHighlightByPixel(List<Highlight> closestValues, double x,
-      double y, AxisDependency axis, double minSelectionDistance) {
-    Highlight closest;
+  Highlight? getClosestHighlightByPixel(
+    List<Highlight> closestValues,
+    double x,
+    double y,
+    AxisDependency axis,
+    double minSelectionDistance,
+  ) {
+    Highlight? closest;
     double distance = minSelectionDistance;
 
     for (int i = 0; i < closestValues.length; i++) {
@@ -214,12 +219,12 @@ class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider>
   /// @param y2
   /// @return
   double getDistance(double x1, double y1, double x2, double y2) {
-    double x = pow((x1 - x2), 2);
-    double y = pow((y1 - y2), 2);
+    double x = pow((x1 - x2), 2).toDouble();
+    double y = pow((y1 - y2), 2).toDouble();
     return sqrt(x + y);
   }
 
-  BarLineScatterCandleBubbleData getData() {
+  BarLineScatterCandleBubbleData? getData() {
     return _provider.getData();
   }
 }

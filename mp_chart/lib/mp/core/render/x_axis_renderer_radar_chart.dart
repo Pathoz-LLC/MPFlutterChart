@@ -12,9 +12,11 @@ class XAxisRendererRadarChart extends XAxisRenderer {
   RadarChartPainter _painter;
 
   XAxisRendererRadarChart(
-      ViewPortHandler viewPortHandler, XAxis xAxis, RadarChartPainter chart)
-      : super(viewPortHandler, xAxis, null) {
-    _painter = chart;
+    ViewPortHandler viewPortHandler,
+    XAxis xAxis,
+    this._painter,
+  ) : super(viewPortHandler, xAxis, null) {
+    // _painter = chart;
   }
 
   @override
@@ -25,9 +27,13 @@ class XAxisRendererRadarChart extends XAxisRenderer {
     final MPPointF drawLabelAnchor = MPPointF.getInstance1(0.5, 0.25);
 
     axisLabelPaint = PainterUtils.create(
-        null, null, xAxis.textColor, xAxis.textSize,
-        fontWeight: xAxis.typeface?.fontWeight,
-        fontFamily: xAxis.typeface?.fontFamily);
+      null,
+      null,
+      xAxis.textColor,
+      xAxis.textSize,
+      fontWeight: xAxis.typeface.fontWeight,
+      fontFamily: xAxis.typeface.fontFamily,
+    );
 
     double sliceangle = _painter.getSliceAngle();
 
@@ -38,7 +44,7 @@ class XAxisRendererRadarChart extends XAxisRenderer {
     MPPointF center = _painter.getCenterOffsets();
     MPPointF pOut = MPPointF.getInstance1(0, 0);
     for (int i = 0;
-        i < _painter.getData().getMaxEntryCountSet().getEntryCount();
+        i < (_painter.getData().getMaxEntryCountSet()?.getEntryCount() ?? 0);
         i++) {
       String label =
           xAxis.getValueFormatter().getAxisLabel(i.toDouble(), xAxis);

@@ -11,11 +11,12 @@ import 'package:mp_chart/mp/core/poolable/point.dart';
 import 'package:mp_chart/mp/core/range.dart';
 
 class BarHighlighter extends ChartHighlighter<BarDataProvider> {
+  //
   BarHighlighter(BarDataProvider chart) : super(chart);
 
   @override
-  Highlight getHighlight(double x, double y) {
-    Highlight high = super.getHighlight(x, y);
+  Highlight? getHighlight(double x, double y) {
+    Highlight? high = super.getHighlight(x, y);
 
     if (high == null) {
       return null;
@@ -23,11 +24,11 @@ class BarHighlighter extends ChartHighlighter<BarDataProvider> {
 
     MPPointD pos = getValsForTouch(x, y);
 
-    BarData barData = provider.getBarData();
+    BarData? barData = provider.getBarData();
 
-    IBarDataSet set = barData.getDataSetByIndex(high.dataSetIndex);
-    if (set.isStacked()) {
-      return getStackedHighlight(high, set, pos.x, pos.y);
+    IBarDataSet? set = barData?.getDataSetByIndex(high.dataSetIndex);
+    if (set != null || set!.isStacked()) {
+      return getStackedHighlight(high, set, pos.x, pos.y)!;
     }
 
     MPPointD.recycleInstance2(pos);
@@ -43,9 +44,9 @@ class BarHighlighter extends ChartHighlighter<BarDataProvider> {
   /// @param xVal
   /// @param yVal
   /// @return
-  Highlight getStackedHighlight(
+  Highlight? getStackedHighlight(
       Highlight high, IBarDataSet set, double xVal, double yVal) {
-    BarEntry entry = set.getEntryForXValue2(xVal, yVal);
+    BarEntry? entry = set.getEntryForXValue2(xVal, yVal);
 
     if (entry == null) return null;
 
@@ -105,7 +106,7 @@ class BarHighlighter extends ChartHighlighter<BarDataProvider> {
   }
 
   @override
-  BarLineScatterCandleBubbleData getData() {
+  BarLineScatterCandleBubbleData? getData() {
     return provider.getBarData();
   }
 }
